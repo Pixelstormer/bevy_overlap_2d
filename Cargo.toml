@@ -1,0 +1,15 @@
+[package]
+name = "bevy-overlap-2d"
+description = "A basic 2d collision detection library for the Bevy game engine"
+version = "0.1.0"
+authors = ["Pixelstorm <thepixelstormer@gmail.com>"]
+edition = "2021"
+license = "Apache-2.0"
+
+[dependencies]
+bevy = "0.9"
+bevy_prototype_lyon = { version = "0.7", optional = true }
+
+[features]
+default = ["debug-draw"]
+debug-draw = ["dep:bevy_prototype_lyon"]

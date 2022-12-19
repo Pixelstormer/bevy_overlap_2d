@@ -1,0 +1,95 @@
+use super::*;
+use bevy::prelude::Vec2;
+use std::f32::consts::{PI, TAU};
+
+#[derive(Clone, Copy, Default)]
+pub struct Circle {
+    pub position: Vec2,
+    pub radius: f32,
+}
+
+impl Circle {
+    pub fn new(position: Vec2, radius: f32) -> Self {
+        Self { position, radius }
+    }
+
+    pub fn from_diameter(position: Vec2, diameter: f32) -> Self {
+        Self {
+            position,
+            radius: diameter / 2.0,
+        }
+    }
+
+    pub fn radius_squared(&self) -> f32 {
+        self.radius * self.radius
+    }
+
+    pub fn diameter(&self) -> f32 {
+        self.radius * 2.0
+    }
+
+    pub fn circumference(&self) -> f32 {
+        self.radius * TAU
+    }
+
+    pub fn area(&self) -> f32 {
+        self.radius_squared() * PI
+    }
+}
+
+impl Collides<Capsule> for Circle {
+    fn collide(&self, other: &Capsule) -> CollisionResult {
+        other.collide(self)
+    }
+}
+
+impl Collides<Circle> for Circle {
+    fn collide(&self, other: &Circle) -> CollisionResult {
+        (self.position.distance_squared(other.position)
+            <= self.radius_squared() + other.radius_squared())
+        .into()
+    }
+}
+
+impl Collides<Line> for Circle {
+    fn collide(&self, other: &Line) -> CollisionResult {
+        (other.distance_to_point_squared(&self.position) <= self.radius_squared()).into()
+    }
+}
+
+impl Collides<Point> for Circle {
+    fn collide(&self, other: &Point) -> CollisionResult {
+        (other.distance_squared(self.position) <= self.radius_squared()).into()
+    }
+}
+
+impl Collides<Polygon> for Circle {
+    fn collide(&self, other: &Polygon) -> CollisionResult {
+        todo!()
+    }
+}
+
+impl Collides<Rect> for Circle {
+    fn collide(&self, other: &Rect) -> CollisionResult {
+        ((self.position - self.position.clamp(other.min(), other.max())).length_squared()
+            <= self.radius_squared())
+        .into()
+    }
+}
+
+impl Collides<Triangle> for Circle {
+    fn collide(&self, other: &Triangle) -> CollisionResult {
+        todo!()
+    }
+}
+
+#[cfg(feature = "debug-draw")]
+impl bevy_prototype_lyon::geometry::Geometry for Circle {
+    fn add_geometry(&self, b: &mut bevy_prototype_lyon::prelude::tess::path::path::Builder) {
+        b.add_circle(
+            (0.0, 0.0).into(),
+            self.radius,
+            bevy_prototype_lyon::prelude::tess::path::Winding::Positive,
+        );
+    }
+}
