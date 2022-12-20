@@ -43,25 +43,10 @@ fn update_cursor_position(
     windows: Res<Windows>,
     mut cursor_position: ResMut<CursorPosition>,
 ) {
-    let window = windows.primary();
-
-    let Some(screen_pos) = window.cursor_position() else { return };
-
-    // Convert screen position [0..resolution] to ndc [-1..1] (gpu coordinates)
-    let window_size = Vec2::new(window.width(), window.height());
-    let ndc = ((screen_pos / window_size) * 2.0) - Vec2::ONE;
-
-    // Matrix for undoing the projection and camera transform
     let (camera, camera_transform) = query.single();
-    let ndc_to_world = camera_transform.compute_matrix() * camera.projection_matrix().inverse();
-
-    // Use it to convert ndc to world-space coordinates
-    let world_pos = ndc_to_world.project_point3(ndc.extend(-1.0));
-
-    // Reduce it to a 2D value
-    let world_pos = world_pos.truncate();
-
-    *cursor_position = CursorPosition(world_pos);
+    let Some(viewport_position) = windows.primary().cursor_position() else { return };
+    let Some(world_position) = camera.viewport_to_world(camera_transform, viewport_position) else { return };
+    *cursor_position = CursorPosition(world_position.origin.truncate());
 }
 
 fn pick(
