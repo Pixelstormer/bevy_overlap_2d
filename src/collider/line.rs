@@ -1,9 +1,10 @@
 use super::*;
+use crate::transform_ext::TransformPoint2;
 use bevy::prelude::Vec2;
 use bevy_prototype_lyon::prelude::tess::geom::LineSegment;
 
 /// A straight line connecting two points.
-#[derive(Clone, Copy, Default)]
+#[derive(Clone, Copy, Default, Debug)]
 pub struct Line {
     pub start: Vec2,
     pub end: Vec2,
@@ -135,6 +136,15 @@ impl Line {
         let d_p = to_start + (sc * self_diff) - (tc * line_diff); // =  S1(sc) - S2(tc)
 
         d_p.length_squared() // return the closest distance
+    }
+}
+
+impl Transformable for Line {
+    fn to_transformed(&self, transform: &GlobalTransform) -> Self {
+        Self::new(
+            transform.transform_point2(self.start),
+            transform.transform_point2(self.end),
+        )
     }
 }
 

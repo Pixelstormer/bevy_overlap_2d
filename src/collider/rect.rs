@@ -2,12 +2,19 @@ use super::*;
 use bevy::prelude::{Rect as BevyRect, Vec2};
 use bevy_prototype_lyon::prelude::tess::geom::Box2D;
 
-#[derive(Default, Clone, Copy, Debug, PartialEq)]
+#[derive(Default, Clone, Copy, PartialEq, Debug)]
 pub struct Rect(pub BevyRect);
 
 impl Rect {
     pub fn new(rect: BevyRect) -> Self {
         Self(rect)
+    }
+
+    pub fn from_corners(p0: Vec2, p1: Vec2) -> Self {
+        Self(BevyRect {
+            min: p0.min(p1),
+            max: p0.max(p1),
+        })
     }
 
     pub fn min(&self) -> Vec2 {
@@ -34,6 +41,15 @@ impl Rect {
 impl From<BevyRect> for Rect {
     fn from(rect: BevyRect) -> Self {
         Self(rect)
+    }
+}
+
+impl Transformable for Rect {
+    fn to_transformed(&self, transform: &GlobalTransform) -> Self {
+        Self::new(BevyRect {
+            min: transform.transform_point2(self.0.min),
+            max: transform.transform_point2(self.0.max),
+        })
     }
 }
 

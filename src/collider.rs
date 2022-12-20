@@ -6,17 +6,21 @@ mod polygon;
 mod rect;
 mod triangle;
 
-use bevy::prelude::{Component, Rect as BevyRect, Vec2};
+use bevy::prelude::{Component, GlobalTransform, Rect as BevyRect, Transform, Vec2};
 pub use {
-    capsule::Capsule, circle::Circle, line::Line, point::Point, polygon::Polygon, rect::Rect,
-    triangle::Triangle,
+    super::transform_ext::TransformPoint2, capsule::Capsule, circle::Circle, line::Line,
+    point::Point, polygon::Polygon, rect::Rect, triangle::Triangle,
 };
 
-pub trait Collides<T> {
+pub trait Transformable {
+    fn to_transformed(&self, transform: &GlobalTransform) -> Self;
+}
+
+pub trait Collides<T>: Transformable {
     fn collide(&self, other: &T) -> CollisionResult;
 }
 
-#[derive(Clone, Default)]
+#[derive(Clone, Default, Debug)]
 pub struct CollisionResult {
     pub colliding: bool,
     // pub penetration_depth: f32,
@@ -35,7 +39,7 @@ impl From<bool> for CollisionResult {
     }
 }
 
-#[derive(Clone, Component)]
+#[derive(Clone, Component, Debug)]
 pub enum Collider {
     Capsule(Capsule),
     Circle(Circle),
@@ -109,6 +113,20 @@ impl From<BevyRect> for Collider {
 impl From<Triangle> for Collider {
     fn from(triangle: Triangle) -> Self {
         Self::Triangle(triangle)
+    }
+}
+
+impl Transformable for Collider {
+    fn to_transformed(&self, transform: &GlobalTransform) -> Self {
+        match self {
+            Collider::Capsule(shape) => shape.to_transformed(transform).into(),
+            Collider::Circle(shape) => shape.to_transformed(transform).into(),
+            Collider::Line(shape) => shape.to_transformed(transform).into(),
+            Collider::Point(shape) => shape.to_transformed(transform).into(),
+            Collider::Polygon(shape) => shape.to_transformed(transform).into(),
+            Collider::Rect(shape) => shape.to_transformed(transform).into(),
+            Collider::Triangle(shape) => shape.to_transformed(transform).into(),
+        }
     }
 }
 

@@ -1,10 +1,34 @@
 use super::*;
+use crate::transform_ext::TransformPoint2;
 use bevy::prelude::Vec2;
 
 /// An arbitrary polygon.
-#[derive(Clone, Default)]
+#[derive(Clone, Default, Debug)]
 pub struct Polygon {
     pub vertices: Vec<Vec2>,
+}
+
+impl Polygon {
+    pub fn new(vertices: Vec<Vec2>) -> Self {
+        Self { vertices }
+    }
+}
+
+impl From<Vec<Vec2>> for Polygon {
+    fn from(vertices: Vec<Vec2>) -> Self {
+        Self { vertices }
+    }
+}
+
+impl Transformable for Polygon {
+    fn to_transformed(&self, transform: &GlobalTransform) -> Self {
+        Self::new(
+            self.vertices
+                .iter()
+                .map(|&vertex| transform.transform_point2(vertex))
+                .collect(),
+        )
+    }
 }
 
 impl Collides<Capsule> for Polygon {

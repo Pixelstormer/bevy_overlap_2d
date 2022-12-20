@@ -1,7 +1,8 @@
 use super::*;
+use crate::transform_ext::TransformPoint2;
 use bevy::prelude::Vec2;
 
-#[derive(Clone, Copy, PartialEq, Default)]
+#[derive(Clone, Copy, PartialEq, Default, Debug)]
 pub struct Point(pub Vec2);
 
 impl Point {
@@ -24,15 +25,21 @@ impl From<Vec2> for Point {
     }
 }
 
+impl Transformable for Point {
+    fn to_transformed(&self, transform: &GlobalTransform) -> Self {
+        Self::new(transform.transform_point2(self.0))
+    }
+}
+
 impl Collides<Capsule> for Point {
     fn collide(&self, other: &Capsule) -> CollisionResult {
-        todo!()
+        other.collide(self)
     }
 }
 
 impl Collides<Circle> for Point {
     fn collide(&self, other: &Circle) -> CollisionResult {
-        todo!()
+        other.collide(self)
     }
 }
 

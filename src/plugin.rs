@@ -1,16 +1,19 @@
 use super::collider::{Collider, Collides, CollisionResult};
 use super::draw::draw_colliders;
-use crate::draw::{undraw_colliders, update_colliders, DrawCollider};
+use crate::{
+    collider::Transformable,
+    draw::{undraw_colliders, update_colliders, DrawCollider},
+};
 use bevy::{prelude::*, render::render_phase::Draw, utils::HashSet};
 use bevy_prototype_lyon::prelude::ShapePlugin;
 
-#[derive(Component, Default)]
+#[derive(Component, Default, Debug)]
 pub struct Colliding(pub HashSet<Entity>);
 
 #[derive(StageLabel)]
 pub struct CollisionStage;
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub enum CollisionEvent {
     Began(CollisionBegan),
     Ended(CollisionEnded),
@@ -26,13 +29,13 @@ impl CollisionEvent {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct CollisionBegan {
     pub a: Entity,
     pub b: Entity,
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct CollisionEnded {
     pub a: Entity,
     pub b: Entity,
@@ -77,7 +80,7 @@ impl Plugin for CollisionPlugin {
 
 fn find_colliding_pairs(
     mut commands: Commands,
-    mut query: Query<(Entity, &Transform, &Collider, &mut Colliding)>,
+    mut query: Query<(Entity, &GlobalTransform, &Collider, &mut Colliding)>,
     mut events: EventWriter<CollisionEvent>,
 ) {
     let size = query.iter_combinations::<2>().size_hint().0;
@@ -88,7 +91,9 @@ fn find_colliding_pairs(
         let (a_entity, a_transform, a_collider, mut a_colliding) = a;
         let (b_entity, b_transform, b_collider, mut b_colliding) = b;
 
-        let result = a_collider.collide(b_collider);
+        let result = a_collider
+            .to_transformed(a_transform)
+            .collide(&b_collider.to_transformed(b_transform));
 
         if result.colliding {
             let a_was_disjoint = a_colliding.0.insert(b_entity);

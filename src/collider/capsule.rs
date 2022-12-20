@@ -8,19 +8,29 @@ use std::f32::consts::PI;
 
 /// A 2d capsule is a shape that can be imagined as a rectangle with a pair of semicircles attached to
 /// opposite sides, or more formally, the set of all points within a certain distance from a line.
-#[derive(Clone, Copy, Default)]
+#[derive(Clone, Copy, Default, Debug)]
 pub struct Capsule {
     pub line: Line,
     pub radius: f32,
 }
 
 impl Capsule {
+    pub fn new(line: Line, radius: f32) -> Self {
+        Self { line, radius }
+    }
+
     pub fn radius_squared(&self) -> f32 {
         self.radius * self.radius
     }
 
     pub fn perimeter(&self) -> f32 {
         2.0 * ((PI * self.radius) + self.line.length())
+    }
+}
+
+impl Transformable for Capsule {
+    fn to_transformed(&self, transform: &GlobalTransform) -> Self {
+        Self::new(self.line.to_transformed(transform), self.radius)
     }
 }
 

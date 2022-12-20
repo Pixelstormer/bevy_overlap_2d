@@ -5,7 +5,7 @@ use bevy_prototype_lyon::prelude::{DrawMode, GeometryBuilder, StrokeMode};
 #[derive(Clone, Copy, Component, Default)]
 pub struct DrawCollider;
 
-#[derive(Clone, Copy, Component)]
+#[derive(Clone, Copy, Component, Debug)]
 pub struct DrawColliderShape(Entity);
 
 pub fn draw_colliders(

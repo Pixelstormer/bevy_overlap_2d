@@ -2,7 +2,7 @@ use super::*;
 use bevy::prelude::Vec2;
 
 /// A triangle.
-#[derive(Clone, Copy, Default)]
+#[derive(Clone, Copy, Default, Debug)]
 pub struct Triangle {
     pub a: Vec2,
     pub b: Vec2,
@@ -28,6 +28,16 @@ impl Triangle {
 
     pub fn perimeter(&self) -> f32 {
         self.a.distance(self.b) + self.a.distance(self.c) + self.b.distance(self.c)
+    }
+}
+
+impl Transformable for Triangle {
+    fn to_transformed(&self, transform: &GlobalTransform) -> Self {
+        Self::new(
+            transform.transform_point2(self.a),
+            transform.transform_point2(self.b),
+            transform.transform_point2(self.c),
+        )
     }
 }
 

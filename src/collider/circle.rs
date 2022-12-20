@@ -1,8 +1,9 @@
 use super::*;
-use bevy::prelude::Vec2;
+use crate::transform_ext::TransformPoint2;
+use bevy::prelude::{Transform, Vec2};
 use std::f32::consts::{PI, TAU};
 
-#[derive(Clone, Copy, Default)]
+#[derive(Clone, Copy, Default, Debug)]
 pub struct Circle {
     pub position: Vec2,
     pub radius: f32,
@@ -34,6 +35,12 @@ impl Circle {
 
     pub fn area(&self) -> f32 {
         self.radius_squared() * PI
+    }
+}
+
+impl Transformable for Circle {
+    fn to_transformed(&self, transform: &GlobalTransform) -> Self {
+        Self::new(transform.transform_point2(self.position), self.radius)
     }
 }
 
