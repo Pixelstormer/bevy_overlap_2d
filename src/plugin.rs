@@ -2,7 +2,7 @@ use super::collider::{Collider, Collides, CollisionResult};
 use super::draw::draw_colliders;
 use crate::{
     collider::Transformable,
-    draw::{undraw_colliders, update_colliders, DrawCollider},
+    draw::{undraw_colliders, update_colliders, update_colors, DrawCollider},
 };
 use bevy::{prelude::*, render::render_phase::Draw, utils::HashSet};
 use bevy_prototype_lyon::prelude::ShapePlugin;
@@ -65,6 +65,7 @@ impl Plugin for CollisionPlugin {
             app.add_plugin(ShapePlugin);
             app.add_system(draw_colliders);
             app.add_system(update_colliders);
+            app.add_system(update_colors);
             app.add_system(undraw_colliders);
         }
 
