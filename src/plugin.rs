@@ -3,8 +3,9 @@ use super::draw::draw_colliders;
 use crate::{
     collider::Transformable,
     draw::{undraw_colliders, update_colliders, update_colors, DrawCollider},
+    Capsule, Circle, Line, Point, Polygon, Rect, Triangle,
 };
-use bevy::{prelude::*, render::render_phase::Draw, utils::HashSet};
+use bevy::{prelude::Rect as BevyRect, prelude::*, render::render_phase::Draw, utils::HashSet};
 use bevy_prototype_lyon::prelude::ShapePlugin;
 
 #[derive(Component, Default, Debug)]
@@ -46,6 +47,62 @@ pub struct ColliderBundle {
     pub collider: Collider,
     pub colliding: Colliding,
     pub transform: TransformBundle,
+}
+
+impl ColliderBundle {
+    pub fn capsule(height: f32, radius: f32) -> Self {
+        let half_height = height / 2.0;
+        Self {
+            collider: Capsule::new(
+                Line::new((0.0, half_height).into(), (0.0, -half_height).into()),
+                radius,
+            )
+            .into(),
+            ..Default::default()
+        }
+    }
+
+    pub fn circle(radius: f32) -> Self {
+        Self {
+            collider: Circle::new(Vec2::ZERO, radius).into(),
+            ..Default::default()
+        }
+    }
+
+    pub fn line(start: Vec2, end: Vec2) -> Self {
+        Self {
+            collider: Line::new(start, end).into(),
+            ..Default::default()
+        }
+    }
+
+    pub fn point(point: Vec2) -> Self {
+        Self {
+            collider: Point::new(point).into(),
+            ..Default::default()
+        }
+    }
+
+    pub fn polygon(points: impl Into<Vec<Vec2>>) -> Self {
+        Self {
+            collider: Polygon::new(points.into()).into(),
+            ..Default::default()
+        }
+    }
+
+    pub fn rect(rect: BevyRect) -> Self {
+        Self {
+            collider: Rect::new(rect).into(),
+            ..Default::default()
+        }
+    }
+
+    pub fn triangle(a: Vec2, b: Vec2, c: Vec2) -> Self {
+        Self {
+            collider: Triangle::new(a, b, c).into(),
+            ..Default::default()
+        }
+    }
 }
 
 #[derive(Bundle, Default)]

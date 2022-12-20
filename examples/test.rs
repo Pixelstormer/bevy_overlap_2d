@@ -26,19 +26,13 @@ fn spawn_world(mut commands: Commands) {
     commands.spawn(Camera2dBundle::default());
 
     commands.spawn((
-        ColliderBundle::default(),
+        ColliderBundle::point(Vec2::ZERO),
         Cursor,
         Picked::default(),
         ColliderDrawBundle::default(),
     ));
 
-    commands.spawn((
-        ColliderBundle {
-            collider: Circle::new(Vec2::ZERO, 25.0).into(),
-            ..Default::default()
-        },
-        ColliderDrawBundle::default(),
-    ));
+    commands.spawn((ColliderBundle::circle(25.0), ColliderDrawBundle::default()));
 }
 
 fn update_cursor_position(

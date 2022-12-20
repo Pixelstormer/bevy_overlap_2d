@@ -139,6 +139,18 @@ impl Line {
     }
 }
 
+impl From<(Vec2, Vec2)> for Line {
+    fn from((start, end): (Vec2, Vec2)) -> Self {
+        Self { start, end }
+    }
+}
+
+impl From<[Vec2; 2]> for Line {
+    fn from([start, end]: [Vec2; 2]) -> Self {
+        Self { start, end }
+    }
+}
+
 impl Transformable for Line {
     fn to_transformed(&self, transform: &GlobalTransform) -> Self {
         Self::new(
