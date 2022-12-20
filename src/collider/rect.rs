@@ -1,11 +1,15 @@
 use super::*;
-use bevy::prelude::Vec2;
+use bevy::prelude::{Rect as BevyRect, Vec2};
 use bevy_prototype_lyon::prelude::tess::geom::Box2D;
 
 #[derive(Default, Clone, Copy, Debug, PartialEq)]
-pub struct Rect(pub bevy::prelude::Rect);
+pub struct Rect(pub BevyRect);
 
 impl Rect {
+    pub fn new(rect: BevyRect) -> Self {
+        Self(rect)
+    }
+
     pub fn min(&self) -> Vec2 {
         self.0.min
     }
@@ -24,6 +28,12 @@ impl Rect {
 
     pub fn contains(&self, point: Vec2) -> bool {
         self.0.contains(point)
+    }
+}
+
+impl From<BevyRect> for Rect {
+    fn from(rect: BevyRect) -> Self {
+        Self(rect)
     }
 }
 

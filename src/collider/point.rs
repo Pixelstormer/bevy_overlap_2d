@@ -5,11 +5,22 @@ use bevy::prelude::Vec2;
 pub struct Point(pub Vec2);
 
 impl Point {
+    pub fn new(point: Vec2) -> Self {
+        Self(point)
+    }
+
     pub fn distance(&self, other: Vec2) -> f32 {
         self.0.distance(other)
     }
+
     pub fn distance_squared(&self, other: Vec2) -> f32 {
         self.0.distance_squared(other)
+    }
+}
+
+impl From<Vec2> for Point {
+    fn from(point: Vec2) -> Self {
+        Self(point)
     }
 }
 

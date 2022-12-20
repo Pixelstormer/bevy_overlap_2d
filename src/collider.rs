@@ -6,7 +6,7 @@ mod polygon;
 mod rect;
 mod triangle;
 
-use bevy::prelude::Component;
+use bevy::prelude::{Component, Rect as BevyRect, Vec2};
 pub use {
     capsule::Capsule, circle::Circle, line::Line, point::Point, polygon::Polygon, rect::Rect,
     triangle::Triangle,
@@ -46,6 +46,12 @@ pub enum Collider {
     Triangle(Triangle),
 }
 
+impl Collider {
+    pub fn new(collider: impl Into<Self>) -> Self {
+        collider.into()
+    }
+}
+
 impl Default for Collider {
     fn default() -> Self {
         Self::Point(Point::default())
@@ -76,6 +82,12 @@ impl From<Point> for Collider {
     }
 }
 
+impl From<Vec2> for Collider {
+    fn from(point: Vec2) -> Self {
+        Self::Point(point.into())
+    }
+}
+
 impl From<Polygon> for Collider {
     fn from(polygon: Polygon) -> Self {
         Self::Polygon(polygon)
@@ -85,6 +97,12 @@ impl From<Polygon> for Collider {
 impl From<Rect> for Collider {
     fn from(rect: Rect) -> Self {
         Self::Rect(rect)
+    }
+}
+
+impl From<BevyRect> for Collider {
+    fn from(rect: BevyRect) -> Self {
+        Self::Rect(rect.into())
     }
 }
 

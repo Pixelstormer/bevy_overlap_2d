@@ -5,7 +5,7 @@ mod plugin;
 mod draw;
 
 pub use collider::{
-    Capsule, Circle, Collider, CollisionResult, Line, Point, Polygon, Rect, Triangle,
+    Capsule, Circle, Collider, Collides, CollisionResult, Line, Point, Polygon, Rect, Triangle,
 };
 pub use plugin::{
     ColliderBundle, ColliderDrawBundle, Colliding, CollisionBegan, CollisionEnded, CollisionEvent,
