@@ -25,7 +25,12 @@ fn main() {
 fn spawn_world(mut commands: Commands) {
     commands.spawn(Camera2dBundle::default());
 
-    commands.spawn((ColliderBundle::default(), Cursor, Picked::default()));
+    commands.spawn((
+        ColliderBundle::default(),
+        Cursor,
+        Picked::default(),
+        ColliderDrawBundle::default(),
+    ));
 
     commands.spawn((
         ColliderBundle {

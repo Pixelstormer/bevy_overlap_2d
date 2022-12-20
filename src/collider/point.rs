@@ -1,6 +1,7 @@
 use super::*;
 use crate::transform_ext::TransformPoint2;
 use bevy::prelude::Vec2;
+use bevy_prototype_lyon::prelude::tess::geom::LineSegment;
 
 #[derive(Clone, Copy, PartialEq, Default, Debug)]
 pub struct Point(pub Vec2);
@@ -76,6 +77,14 @@ impl Collides<Triangle> for Point {
 #[cfg(feature = "debug-draw")]
 impl bevy_prototype_lyon::geometry::Geometry for Point {
     fn add_geometry(&self, b: &mut bevy_prototype_lyon::prelude::tess::path::path::Builder) {
-        b.add_point((self.0.x, self.0.y).into());
+        b.add_line_segment(&LineSegment {
+            from: (self.0.x - 5.0, self.0.y - 5.0).into(),
+            to: (self.0.x + 5.0, self.0.y + 5.0).into(),
+        });
+
+        b.add_line_segment(&LineSegment {
+            from: (self.0.x + 5.0, self.0.y - 5.0).into(),
+            to: (self.0.x - 5.0, self.0.y + 5.0).into(),
+        });
     }
 }
