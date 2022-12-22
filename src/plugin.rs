@@ -97,12 +97,12 @@ impl ColliderBundle {
         }
     }
 
-    pub fn triangle(a: Vec2, b: Vec2, c: Vec2) -> Self {
-        Self {
-            collider: Triangle::new(a, b, c).into(),
-            ..Default::default()
-        }
-    }
+    // pub fn triangle(a: Vec2, b: Vec2, c: Vec2) -> Self {
+    //     Self {
+    //         collider: Triangle::new(a, b, c).into(),
+    //         ..Default::default()
+    //     }
+    // }
 }
 
 #[derive(Bundle, Default)]

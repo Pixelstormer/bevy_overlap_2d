@@ -32,7 +32,63 @@ fn spawn_world(mut commands: Commands) {
         ColliderDrawBundle::default(),
     ));
 
-    commands.spawn((ColliderBundle::circle(25.0), ColliderDrawBundle::default()));
+    commands
+        .spawn((
+            ColliderBundle::capsule(30.0, 15.0),
+            ColliderDrawBundle::default(),
+        ))
+        .insert(Transform::from_xyz(-150.0, 0.0, 0.0));
+
+    commands
+        .spawn((ColliderBundle::circle(25.0), ColliderDrawBundle::default()))
+        .insert(Transform::from_xyz(-100.0, 0.0, 0.0));
+
+    commands
+        .spawn((
+            ColliderBundle::line(Vec2::new(-10.0, -25.0), Vec2::new(10.0, 25.0)),
+            ColliderDrawBundle::default(),
+        ))
+        .insert(Transform::from_xyz(-50.0, 0.0, 0.0));
+
+    commands
+        .spawn((
+            ColliderBundle::point(Vec2::ZERO),
+            ColliderDrawBundle::default(),
+        ))
+        .insert(Transform::from_xyz(50.0, 0.0, 0.0));
+
+    commands
+        .spawn((
+            ColliderBundle::polygon([
+                Vec2::new(-15.0, -25.0),
+                Vec2::new(15.0, -25.0),
+                Vec2::new(25.0, 25.0),
+                Vec2::new(-25.0, 25.0),
+            ]),
+            ColliderDrawBundle::default(),
+        ))
+        .insert(Transform::from_xyz(100.0, 0.0, 0.0));
+
+    commands
+        .spawn((
+            ColliderBundle::rect(Rect::from_center_half_size(
+                Vec2::ZERO,
+                Vec2::new(15.0, 30.0),
+            )),
+            ColliderDrawBundle::default(),
+        ))
+        .insert(Transform::from_xyz(150.0, 0.0, 0.0));
+
+    // commands
+    //     .spawn((
+    //         ColliderBundle::triangle(
+    //             Vec2::new(0.0, 25.0),
+    //             Vec2::new(15.0, 15.0),
+    //             Vec2::new(-15.0, 15.0),
+    //         ),
+    //         ColliderDrawBundle::default(),
+    //     ))
+    //     .insert(Transform::from_xyz(150.0, 0.0, 0.0));
 }
 
 fn update_cursor_position(

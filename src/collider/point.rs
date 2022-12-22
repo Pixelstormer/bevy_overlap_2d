@@ -58,7 +58,7 @@ impl Collides<Point> for Point {
 
 impl Collides<Polygon> for Point {
     fn collide(&self, other: &Polygon) -> CollisionResult {
-        todo!()
+        other.collide(self)
     }
 }
 

@@ -47,7 +47,7 @@ pub enum Collider {
     Point(Point),
     Polygon(Polygon),
     Rect(Rect),
-    Triangle(Triangle),
+    //Triangle(Triangle),
 }
 
 impl Collider {
@@ -110,11 +110,11 @@ impl From<BevyRect> for Collider {
     }
 }
 
-impl From<Triangle> for Collider {
-    fn from(triangle: Triangle) -> Self {
-        Self::Triangle(triangle)
-    }
-}
+// impl From<Triangle> for Collider {
+//     fn from(triangle: Triangle) -> Self {
+//         Self::Triangle(triangle)
+//     }
+// }
 
 impl Transformable for Collider {
     fn to_transformed(&self, transform: &GlobalTransform) -> Self {
@@ -125,7 +125,7 @@ impl Transformable for Collider {
             Collider::Point(shape) => shape.to_transformed(transform).into(),
             Collider::Polygon(shape) => shape.to_transformed(transform).into(),
             Collider::Rect(shape) => shape.to_transformed(transform).into(),
-            Collider::Triangle(shape) => shape.to_transformed(transform).into(),
+            // Collider::Triangle(shape) => shape.to_transformed(transform).into(),
         }
     }
 }
@@ -139,49 +139,49 @@ impl Collides<Collider> for Collider {
             (Collider::Capsule(a), Collider::Point(b)) => a.collide(b),
             (Collider::Capsule(a), Collider::Polygon(b)) => a.collide(b),
             (Collider::Capsule(a), Collider::Rect(b)) => a.collide(b),
-            (Collider::Capsule(a), Collider::Triangle(b)) => a.collide(b),
+            // (Collider::Capsule(a), Collider::Triangle(b)) => a.collide(b),
             (Collider::Circle(a), Collider::Capsule(b)) => a.collide(b),
             (Collider::Circle(a), Collider::Circle(b)) => a.collide(b),
             (Collider::Circle(a), Collider::Line(b)) => a.collide(b),
             (Collider::Circle(a), Collider::Point(b)) => a.collide(b),
             (Collider::Circle(a), Collider::Polygon(b)) => a.collide(b),
             (Collider::Circle(a), Collider::Rect(b)) => a.collide(b),
-            (Collider::Circle(a), Collider::Triangle(b)) => a.collide(b),
+            // (Collider::Circle(a), Collider::Triangle(b)) => a.collide(b),
             (Collider::Line(a), Collider::Capsule(b)) => a.collide(b),
             (Collider::Line(a), Collider::Circle(b)) => a.collide(b),
             (Collider::Line(a), Collider::Line(b)) => a.collide(b),
             (Collider::Line(a), Collider::Point(b)) => a.collide(b),
             (Collider::Line(a), Collider::Polygon(b)) => a.collide(b),
             (Collider::Line(a), Collider::Rect(b)) => a.collide(b),
-            (Collider::Line(a), Collider::Triangle(b)) => a.collide(b),
+            // (Collider::Line(a), Collider::Triangle(b)) => a.collide(b),
             (Collider::Point(a), Collider::Capsule(b)) => a.collide(b),
             (Collider::Point(a), Collider::Circle(b)) => a.collide(b),
             (Collider::Point(a), Collider::Line(b)) => a.collide(b),
             (Collider::Point(a), Collider::Point(b)) => a.collide(b),
             (Collider::Point(a), Collider::Polygon(b)) => a.collide(b),
             (Collider::Point(a), Collider::Rect(b)) => a.collide(b),
-            (Collider::Point(a), Collider::Triangle(b)) => a.collide(b),
+            // (Collider::Point(a), Collider::Triangle(b)) => a.collide(b),
             (Collider::Polygon(a), Collider::Capsule(b)) => a.collide(b),
             (Collider::Polygon(a), Collider::Circle(b)) => a.collide(b),
             (Collider::Polygon(a), Collider::Line(b)) => a.collide(b),
             (Collider::Polygon(a), Collider::Point(b)) => a.collide(b),
             (Collider::Polygon(a), Collider::Polygon(b)) => a.collide(b),
             (Collider::Polygon(a), Collider::Rect(b)) => a.collide(b),
-            (Collider::Polygon(a), Collider::Triangle(b)) => a.collide(b),
+            // (Collider::Polygon(a), Collider::Triangle(b)) => a.collide(b),
             (Collider::Rect(a), Collider::Capsule(b)) => a.collide(b),
             (Collider::Rect(a), Collider::Circle(b)) => a.collide(b),
             (Collider::Rect(a), Collider::Line(b)) => a.collide(b),
             (Collider::Rect(a), Collider::Point(b)) => a.collide(b),
             (Collider::Rect(a), Collider::Polygon(b)) => a.collide(b),
             (Collider::Rect(a), Collider::Rect(b)) => a.collide(b),
-            (Collider::Rect(a), Collider::Triangle(b)) => a.collide(b),
-            (Collider::Triangle(a), Collider::Capsule(b)) => a.collide(b),
-            (Collider::Triangle(a), Collider::Circle(b)) => a.collide(b),
-            (Collider::Triangle(a), Collider::Line(b)) => a.collide(b),
-            (Collider::Triangle(a), Collider::Point(b)) => a.collide(b),
-            (Collider::Triangle(a), Collider::Polygon(b)) => a.collide(b),
-            (Collider::Triangle(a), Collider::Rect(b)) => a.collide(b),
-            (Collider::Triangle(a), Collider::Triangle(b)) => a.collide(b),
+            // (Collider::Rect(a), Collider::Triangle(b)) => a.collide(b),
+            // (Collider::Triangle(a), Collider::Capsule(b)) => a.collide(b),
+            // (Collider::Triangle(a), Collider::Circle(b)) => a.collide(b),
+            // (Collider::Triangle(a), Collider::Line(b)) => a.collide(b),
+            // (Collider::Triangle(a), Collider::Point(b)) => a.collide(b),
+            // (Collider::Triangle(a), Collider::Polygon(b)) => a.collide(b),
+            // (Collider::Triangle(a), Collider::Rect(b)) => a.collide(b),
+            // (Collider::Triangle(a), Collider::Triangle(b)) => a.collide(b),
         }
     }
 }
@@ -196,7 +196,7 @@ impl bevy_prototype_lyon::geometry::Geometry for Collider {
             Collider::Point(shape) => shape.add_geometry(b),
             Collider::Polygon(shape) => shape.add_geometry(b),
             Collider::Rect(shape) => shape.add_geometry(b),
-            Collider::Triangle(shape) => shape.add_geometry(b),
+            // Collider::Triangle(shape) => shape.add_geometry(b),
         }
     }
 }

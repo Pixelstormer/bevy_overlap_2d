@@ -33,6 +33,30 @@ impl Rect {
         self.0.height()
     }
 
+    pub fn top_corner(&self) -> Vec2 {
+        Vec2::new(self.0.min.x, self.0.max.y)
+    }
+
+    pub fn bottom_corner(&self) -> Vec2 {
+        Vec2::new(self.0.max.x, self.0.min.y)
+    }
+
+    pub fn left(&self) -> Line {
+        Line::new(self.0.min, self.top_corner())
+    }
+
+    pub fn top(&self) -> Line {
+        Line::new(self.top_corner(), self.0.max)
+    }
+
+    pub fn right(&self) -> Line {
+        Line::new(self.bottom_corner(), self.0.max)
+    }
+
+    pub fn bottom(&self) -> Line {
+        Line::new(self.0.min, self.bottom_corner())
+    }
+
     pub fn contains(&self, point: Vec2) -> bool {
         self.0.contains(point)
     }
@@ -55,7 +79,7 @@ impl Transformable for Rect {
 
 impl Collides<Capsule> for Rect {
     fn collide(&self, other: &Capsule) -> CollisionResult {
-        todo!()
+        other.collide(self)
     }
 }
 
@@ -79,7 +103,7 @@ impl Collides<Point> for Rect {
 
 impl Collides<Polygon> for Rect {
     fn collide(&self, other: &Polygon) -> CollisionResult {
-        todo!()
+        other.collide(self)
     }
 }
 

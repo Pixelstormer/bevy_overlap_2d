@@ -64,13 +64,19 @@ impl Collides<Point> for Capsule {
 
 impl Collides<Polygon> for Capsule {
     fn collide(&self, other: &Polygon) -> CollisionResult {
-        todo!()
+        other.collide(self)
     }
 }
 
 impl Collides<Rect> for Capsule {
     fn collide(&self, other: &Rect) -> CollisionResult {
-        todo!()
+        (other.contains(self.line.start)
+            || other.contains(self.line.end)
+            || self.collide(&other.left()).colliding
+            || self.collide(&other.top()).colliding
+            || self.collide(&other.right()).colliding
+            || self.collide(&other.bottom()).colliding)
+            .into()
     }
 }
 

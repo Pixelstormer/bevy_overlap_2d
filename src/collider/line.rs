@@ -186,41 +186,43 @@ impl Collides<Point> for Line {
 
 impl Collides<Polygon> for Line {
     fn collide(&self, other: &Polygon) -> CollisionResult {
-        todo!()
+        other.collide(self)
     }
 }
 
 impl Collides<Rect> for Line {
     fn collide(&self, other: &Rect) -> CollisionResult {
-        if other.contains(self.start) && other.contains(self.end) {
+        if other.contains(self.start) || other.contains(self.end) {
             return true.into();
         }
 
-        (self
-            .collide(&Line::new(
-                other.min(),
-                Vec2::new(other.min().x, other.max().y),
-            ))
-            .colliding
-            || self
-                .collide(&Line::new(
-                    Vec2::new(other.max().x, other.min().y),
-                    other.max(),
-                ))
-                .colliding
-            || self
-                .collide(&Line::new(
-                    Vec2::new(other.min().x, other.max().y),
-                    other.max(),
-                ))
-                .colliding
-            || self
-                .collide(&Line::new(
-                    other.min(),
-                    Vec2::new(other.max().x, other.min().y),
-                ))
-                .colliding)
-            .into()
+        false.into()
+
+        // (self
+        //     .collide(&Line::new(
+        //         other.min(),
+        //         Vec2::new(other.min().x, other.max().y),
+        //     ))
+        //     .colliding
+        //     || self
+        //         .collide(&Line::new(
+        //             Vec2::new(other.max().x, other.min().y),
+        //             other.max(),
+        //         ))
+        //         .colliding
+        //     || self
+        //         .collide(&Line::new(
+        //             Vec2::new(other.min().x, other.max().y),
+        //             other.max(),
+        //         ))
+        //         .colliding
+        //     || self
+        //         .collide(&Line::new(
+        //             other.min(),
+        //             Vec2::new(other.max().x, other.min().y),
+        //         ))
+        //         .colliding)
+        //     .into()
     }
 }
 

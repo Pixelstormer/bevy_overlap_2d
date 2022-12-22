@@ -72,7 +72,7 @@ impl Collides<Point> for Circle {
 
 impl Collides<Polygon> for Circle {
     fn collide(&self, other: &Polygon) -> CollisionResult {
-        todo!()
+        other.collide(self)
     }
 }
 
