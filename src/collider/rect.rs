@@ -34,27 +34,27 @@ impl Rect {
     }
 
     pub fn top_corner(&self) -> Vec2 {
-        Vec2::new(self.0.min.x, self.0.max.y)
+        Vec2::new(self.min().x, self.max().y)
     }
 
     pub fn bottom_corner(&self) -> Vec2 {
-        Vec2::new(self.0.max.x, self.0.min.y)
+        Vec2::new(self.max().x, self.min().y)
     }
 
     pub fn left(&self) -> Line {
-        Line::new(self.0.min, self.top_corner())
+        Line::new(self.min(), self.top_corner())
     }
 
     pub fn top(&self) -> Line {
-        Line::new(self.top_corner(), self.0.max)
+        Line::new(self.top_corner(), self.max())
     }
 
     pub fn right(&self) -> Line {
-        Line::new(self.bottom_corner(), self.0.max)
+        Line::new(self.bottom_corner(), self.max())
     }
 
     pub fn bottom(&self) -> Line {
-        Line::new(self.0.min, self.bottom_corner())
+        Line::new(self.min(), self.bottom_corner())
     }
 
     pub fn contains(&self, point: Vec2) -> bool {
@@ -71,8 +71,8 @@ impl From<BevyRect> for Rect {
 impl Transformable for Rect {
     fn to_transformed(&self, transform: &GlobalTransform) -> Self {
         Self::new(BevyRect {
-            min: transform.transform_point2(self.0.min),
-            max: transform.transform_point2(self.0.max),
+            min: transform.transform_point2(self.min()),
+            max: transform.transform_point2(self.max()),
         })
     }
 }
@@ -127,7 +127,10 @@ impl Collides<Triangle> for Rect {
 impl bevy_prototype_lyon::geometry::Geometry for Rect {
     fn add_geometry(&self, b: &mut bevy_prototype_lyon::prelude::tess::path::path::Builder) {
         b.add_rectangle(
-            &Box2D::from_size((self.width(), self.height()).into()),
+            &Box2D::new(
+                (self.min().x, self.min().y).into(),
+                (self.max().x, self.max().y).into(),
+            ),
             bevy_prototype_lyon::prelude::tess::path::Winding::Positive,
         );
     }

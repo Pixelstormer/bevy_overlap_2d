@@ -37,11 +37,11 @@ fn spawn_world(mut commands: Commands) {
             ColliderBundle::capsule(30.0, 15.0),
             ColliderDrawBundle::default(),
         ))
-        .insert(Transform::from_xyz(-150.0, 0.0, 0.0));
+        .insert(Transform::from_xyz(-250.0, 0.0, 0.0));
 
     commands
         .spawn((ColliderBundle::circle(25.0), ColliderDrawBundle::default()))
-        .insert(Transform::from_xyz(-100.0, 0.0, 0.0));
+        .insert(Transform::from_xyz(-150.0, 0.0, 0.0));
 
     commands
         .spawn((
@@ -67,7 +67,7 @@ fn spawn_world(mut commands: Commands) {
             ]),
             ColliderDrawBundle::default(),
         ))
-        .insert(Transform::from_xyz(100.0, 0.0, 0.0));
+        .insert(Transform::from_xyz(150.0, 0.0, 0.0));
 
     commands
         .spawn((
@@ -77,7 +77,7 @@ fn spawn_world(mut commands: Commands) {
             )),
             ColliderDrawBundle::default(),
         ))
-        .insert(Transform::from_xyz(150.0, 0.0, 0.0));
+        .insert(Transform::from_xyz(250.0, 0.0, 0.0));
 
     // commands
     //     .spawn((
