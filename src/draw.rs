@@ -10,12 +10,18 @@ pub struct DrawColliderShape(Entity);
 
 pub fn draw_colliders(
     mut commands: Commands,
-    query: Query<(Entity, &Collider), Added<DrawCollider>>,
+    query: Query<(Entity, &Collider, &Colliding), Added<DrawCollider>>,
 ) {
-    for (entity, collider) in query.iter() {
+    for (entity, collider, colliding) in query.iter() {
+        let color = if colliding.0.is_empty() {
+            Color::GREEN
+        } else {
+            Color::RED
+        };
+
         let mut e = commands.spawn(GeometryBuilder::build_as(
             collider,
-            DrawMode::Stroke(StrokeMode::color(Color::GREEN)),
+            DrawMode::Stroke(StrokeMode::color(color)),
             Transform::default(),
         ));
         e.set_parent(entity);

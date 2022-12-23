@@ -1,5 +1,5 @@
 use super::*;
-use bevy::prelude::Vec2;
+use bevy::prelude::{Rect as BevyRect, Vec2};
 use bevy_prototype_lyon::prelude::tess::{
     geom::{euclid::Size2D, Box2D},
     path::{builder::BorderRadii, Winding},
@@ -89,8 +89,12 @@ impl Collides<Triangle> for Capsule {
 #[cfg(feature = "debug-draw")]
 impl bevy_prototype_lyon::geometry::Geometry for Capsule {
     fn add_geometry(&self, b: &mut bevy_prototype_lyon::prelude::tess::path::path::Builder) {
+        let rect = BevyRect::from_corners(self.line.start, self.line.end).inset(self.radius);
         b.add_rounded_rectangle(
-            &Box2D::from_size((self.radius * 2.0, self.line.length() + (self.radius * 2.0)).into()),
+            &Box2D::new(
+                (rect.min.x, rect.min.y).into(),
+                (rect.max.x, rect.max.y).into(),
+            ),
             &BorderRadii::new(self.radius),
             Winding::Positive,
         );
