@@ -36,16 +36,15 @@ impl Transformable for Capsule {
 
 impl Collides<Capsule> for Capsule {
     fn collide(&self, other: &Capsule) -> CollisionResult {
-        (self.line.distance_to_line_squared(&other.line)
-            <= self.radius_squared() + other.radius_squared())
-        .into()
+        (self.line.distance_to_line_squared(&other.line) <= (self.radius + other.radius).powi(2))
+            .into()
     }
 }
 
 impl Collides<Circle> for Capsule {
     fn collide(&self, other: &Circle) -> CollisionResult {
         (self.line.distance_to_point_squared(&other.position)
-            <= self.radius_squared() + other.radius_squared())
+            <= (self.radius + other.radius).powi(2))
         .into()
     }
 }

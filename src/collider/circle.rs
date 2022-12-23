@@ -52,9 +52,8 @@ impl Collides<Capsule> for Circle {
 
 impl Collides<Circle> for Circle {
     fn collide(&self, other: &Circle) -> CollisionResult {
-        (self.position.distance_squared(other.position)
-            <= self.radius_squared() + other.radius_squared())
-        .into()
+        (self.position.distance_squared(other.position) <= (self.radius + other.radius).powi(2))
+            .into()
     }
 }
 
