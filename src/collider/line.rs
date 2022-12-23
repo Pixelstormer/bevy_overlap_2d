@@ -174,13 +174,13 @@ impl Collides<Circle> for Line {
 
 impl Collides<Line> for Line {
     fn collide(&self, other: &Line) -> CollisionResult {
-        (self.distance_to_line_squared(other) == 0.0).into()
+        (self.distance_to_line_squared(other) <= f32::EPSILON).into()
     }
 }
 
 impl Collides<Point> for Line {
     fn collide(&self, other: &Point) -> CollisionResult {
-        (self.distance_to_point_squared(&other.0) == 0.0).into()
+        (self.distance_to_point_squared(&other.0) <= f32::EPSILON).into()
     }
 }
 
@@ -192,37 +192,13 @@ impl Collides<Polygon> for Line {
 
 impl Collides<Rect> for Line {
     fn collide(&self, other: &Rect) -> CollisionResult {
-        if other.contains(self.start) || other.contains(self.end) {
-            return true.into();
-        }
-
-        false.into()
-
-        // (self
-        //     .collide(&Line::new(
-        //         other.min(),
-        //         Vec2::new(other.min().x, other.max().y),
-        //     ))
-        //     .colliding
-        //     || self
-        //         .collide(&Line::new(
-        //             Vec2::new(other.max().x, other.min().y),
-        //             other.max(),
-        //         ))
-        //         .colliding
-        //     || self
-        //         .collide(&Line::new(
-        //             Vec2::new(other.min().x, other.max().y),
-        //             other.max(),
-        //         ))
-        //         .colliding
-        //     || self
-        //         .collide(&Line::new(
-        //             other.min(),
-        //             Vec2::new(other.max().x, other.min().y),
-        //         ))
-        //         .colliding)
-        //     .into()
+        (other.contains(self.start)
+            || other.contains(self.end)
+            || self.collide(&other.left()).colliding
+            || self.collide(&other.top()).colliding
+            || self.collide(&other.right()).colliding
+            || self.collide(&other.bottom()).colliding)
+            .into()
     }
 }
 
