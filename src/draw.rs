@@ -2,6 +2,21 @@ use crate::{Collider, Colliding};
 use bevy::prelude::*;
 use bevy_prototype_lyon::prelude::{DrawMode, GeometryBuilder, StrokeMode};
 
+#[derive(Resource)]
+pub struct DrawColors {
+    pub disjoint: DrawMode,
+    pub colliding: DrawMode,
+}
+
+impl Default for DrawColors {
+    fn default() -> Self {
+        Self {
+            disjoint: DrawMode::Stroke(StrokeMode::color(Color::GREEN)),
+            colliding: DrawMode::Stroke(StrokeMode::color(Color::RED)),
+        }
+    }
+}
+
 #[derive(Clone, Copy, Component, Default)]
 pub struct DrawCollider;
 
@@ -11,17 +26,18 @@ pub struct DrawColliderShape(Entity);
 pub fn draw_colliders(
     mut commands: Commands,
     query: Query<(Entity, &Collider, &Colliding), Added<DrawCollider>>,
+    colors: Res<DrawColors>,
 ) {
     for (entity, collider, colliding) in query.iter() {
         let color = if colliding.0.is_empty() {
-            Color::GREEN
+            colors.disjoint
         } else {
-            Color::RED
+            colors.colliding
         };
 
         let mut e = commands.spawn(GeometryBuilder::build_as(
             collider,
-            DrawMode::Stroke(StrokeMode::color(color)),
+            color,
             Transform::default(),
         ));
         e.set_parent(entity);
@@ -34,17 +50,18 @@ pub fn draw_colliders(
 pub fn update_colliders(
     mut commands: Commands,
     query: Query<(&Collider, &Colliding, &DrawColliderShape), Changed<Collider>>,
+    colors: Res<DrawColors>,
 ) {
     for (collider, colliding, DrawColliderShape(entity)) in query.iter() {
         let color = if colliding.0.is_empty() {
-            Color::GREEN
+            colors.disjoint
         } else {
-            Color::RED
+            colors.colliding
         };
 
         commands.entity(*entity).insert(GeometryBuilder::build_as(
             collider,
-            DrawMode::Stroke(StrokeMode::color(color)),
+            color,
             Transform::default(),
         ));
     }
@@ -53,16 +70,17 @@ pub fn update_colliders(
 pub fn update_colors(
     collider_query: Query<(&Colliding, &DrawColliderShape), Changed<Colliding>>,
     mut shape_query: Query<&mut DrawMode>,
+    colors: Res<DrawColors>,
 ) {
     for (colliding, DrawColliderShape(entity)) in collider_query.iter() {
         let color = if colliding.0.is_empty() {
-            Color::GREEN
+            colors.disjoint
         } else {
-            Color::RED
+            colors.colliding
         };
 
         let mut draw_mode = shape_query.get_mut(*entity).unwrap();
-        *draw_mode = DrawMode::Stroke(StrokeMode::color(color));
+        *draw_mode = color;
     }
 }
 

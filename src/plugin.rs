@@ -2,7 +2,7 @@ use super::collider::{Collider, Collides, CollisionResult};
 use super::draw::draw_colliders;
 use crate::{
     collider::Transformable,
-    draw::{undraw_colliders, update_colliders, update_colors, DrawCollider},
+    draw::{undraw_colliders, update_colliders, update_colors, DrawCollider, DrawColors},
     Capsule, Circle, Line, Point, Polygon, Rect, Triangle,
 };
 use bevy::{prelude::Rect as BevyRect, prelude::*, render::render_phase::Draw, utils::HashSet};
@@ -119,20 +119,20 @@ impl Plugin for CollisionPlugin {
 
         #[cfg(feature = "debug-draw")]
         {
-            app.add_plugin(ShapePlugin);
-            app.add_system(draw_colliders);
-            app.add_system(update_colliders);
-            app.add_system(update_colors);
-            app.add_system(undraw_colliders);
+            app.add_plugin(ShapePlugin)
+                .init_resource::<DrawColors>()
+                .add_system(draw_colliders)
+                .add_system(update_colliders)
+                .add_system(update_colors)
+                .add_system(undraw_colliders);
         }
 
         app.add_stage_after(
             CoreStage::Update,
             CollisionStage,
             SystemStage::single_threaded(),
-        );
-
-        app.add_system_to_stage(CollisionStage, find_colliding_pairs);
+        )
+        .add_system_to_stage(CollisionStage, find_colliding_pairs);
     }
 }
 
