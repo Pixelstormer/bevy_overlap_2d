@@ -3,14 +3,14 @@ use quote::quote;
 use std::sync::atomic::{AtomicU8, Ordering};
 use syn::{parse_macro_input, DeriveInput};
 
-/// Generates an impl of the `CollisionLayerLabel` trait.
-#[proc_macro_derive(CollisionLayerLabel, attributes(collision_layer_label))]
-pub fn derive_collision_layer_label(input: TokenStream) -> TokenStream {
+/// Generates an impl of the `CollisionLayersLabel` trait.
+#[proc_macro_derive(CollisionLayersLabel)]
+pub fn derive_collision_layers_label(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as DeriveInput);
-    impl_collision_layer_label(&input)
+    impl_collision_layers_label(&input)
 }
 
-fn impl_collision_layer_label(ast: &DeriveInput) -> TokenStream {
+fn impl_collision_layers_label(ast: &DeriveInput) -> TokenStream {
     static BIT_NUMBER: AtomicU8 = AtomicU8::new(0);
 
     let shift = BIT_NUMBER.fetch_add(1, Ordering::Relaxed);

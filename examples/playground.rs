@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 use bevy_overlap_2d::{
-    Capsule, ColliderBundle, ColliderDrawBundle, Colliding, CollisionLayerLabel,
-    CollisionLayersLabel, CollisionPlugin, Line,
+    Capsule, ColliderBundle, ColliderDrawBundle, Colliding, CollisionLayersLabel, CollisionPlugin,
+    Line,
 };
 
 #[derive(Component)]
@@ -13,10 +13,10 @@ struct Picked {
     pub offset: Vec3,
 }
 
-#[derive(CollisionLayerLabel)]
+#[derive(CollisionLayersLabel)]
 struct CursorPickable;
 
-#[derive(CollisionLayerLabel)]
+#[derive(CollisionLayersLabel)]
 struct DebugDrawn;
 
 fn main() {

@@ -6,7 +6,7 @@ mod transform_ext;
 #[cfg(feature = "debug-draw")]
 mod draw;
 
-pub use bevy_overlap_2d_derive::CollisionLayerLabel;
+pub use bevy_overlap_2d_derive::CollisionLayersLabel;
 pub use collider::*;
 pub use layers::*;
 pub use plugin::*;
