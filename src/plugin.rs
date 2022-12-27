@@ -8,6 +8,24 @@ use bevy::prelude::*;
 #[derive(StageLabel)]
 pub struct CollisionStage;
 
+pub struct CollisionPlugin;
+
+impl Plugin for CollisionPlugin {
+    fn build(&self, app: &mut App) {
+        app.add_event::<CollisionEvent>();
+
+        #[cfg(feature = "debug-draw")]
+        app.add_plugin(DrawPlugin);
+
+        app.add_stage_after(
+            CoreStage::Update,
+            CollisionStage,
+            SystemStage::single_threaded(),
+        )
+        .add_system_to_stage(CollisionStage, find_colliding_pairs);
+    }
+}
+
 #[derive(Clone, Debug)]
 pub enum CollisionEvent {
     Began(CollisionBegan),
@@ -111,24 +129,6 @@ impl ColliderBundle {
     pub fn with_layers_exclusive(mut self, layers: impl CollisionLayersLabel) -> Self {
         self.layers = CollisionLayers::Exclusive(layers.into_layers());
         self
-    }
-}
-
-pub struct CollisionPlugin;
-
-impl Plugin for CollisionPlugin {
-    fn build(&self, app: &mut bevy::prelude::App) {
-        app.add_event::<CollisionEvent>();
-
-        #[cfg(feature = "debug-draw")]
-        app.add_plugin(DrawPlugin);
-
-        app.add_stage_after(
-            CoreStage::Update,
-            CollisionStage,
-            SystemStage::single_threaded(),
-        )
-        .add_system_to_stage(CollisionStage, find_colliding_pairs);
     }
 }
 
