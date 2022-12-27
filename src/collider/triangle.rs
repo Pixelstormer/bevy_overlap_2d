@@ -71,8 +71,8 @@ impl Collides<Polygon> for Triangle {
     }
 }
 
-impl Collides<Rect> for Triangle {
-    fn collide(&self, other: &Rect) -> CollisionResult {
+impl Collides<Rectangle> for Triangle {
+    fn collide(&self, other: &Rectangle) -> CollisionResult {
         todo!()
     }
 }

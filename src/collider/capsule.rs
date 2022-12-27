@@ -66,8 +66,8 @@ impl Collides<Polygon> for Capsule {
     }
 }
 
-impl Collides<Rect> for Capsule {
-    fn collide(&self, other: &Rect) -> CollisionResult {
+impl Collides<Rectangle> for Capsule {
+    fn collide(&self, other: &Rectangle) -> CollisionResult {
         (other.contains(self.line.start)
             || other.contains(self.line.end)
             || self.collide(&other.left()).colliding
@@ -87,7 +87,7 @@ impl Collides<Triangle> for Capsule {
 #[cfg(feature = "debug-draw")]
 impl Geometry for Capsule {
     fn add_geometry(&self, b: &mut Builder) {
-        let rect = BevyRect::from_corners(self.line.start, self.line.end).inset(self.radius);
+        let rect = Rect::from_corners(self.line.start, self.line.end).inset(self.radius);
         b.add_rounded_rectangle(
             &Box2D::new(
                 (rect.min.x, rect.min.y).into(),

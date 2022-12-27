@@ -1,9 +1,9 @@
 use super::{
-    collider::{Rect, *},
+    collider::*,
     draw::*,
     layers::{CollisionLayers, CollisionLayersLabel},
 };
-use bevy::prelude::{Rect as BevyRect, *};
+use bevy::prelude::*;
 use bevy_prototype_lyon::prelude::ShapePlugin;
 
 #[derive(StageLabel)]
@@ -86,9 +86,9 @@ impl ColliderBundle {
         }
     }
 
-    pub fn rect(rect: BevyRect) -> Self {
+    pub fn rect(rect: Rect) -> Self {
         Self {
-            collider: Rect::new(rect).into(),
+            collider: Rectangle::new(rect).into(),
             ..Default::default()
         }
     }

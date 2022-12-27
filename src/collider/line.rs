@@ -189,8 +189,8 @@ impl Collides<Polygon> for Line {
     }
 }
 
-impl Collides<Rect> for Line {
-    fn collide(&self, other: &Rect) -> CollisionResult {
+impl Collides<Rectangle> for Line {
+    fn collide(&self, other: &Rectangle) -> CollisionResult {
         (other.contains(self.start)
             || other.contains(self.end)
             || self.collide(&other.left()).colliding

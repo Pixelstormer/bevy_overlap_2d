@@ -1,4 +1,4 @@
-use bevy::prelude::{Rect, *};
+use bevy::prelude::*;
 use bevy_overlap_2d::prelude::*;
 
 #[derive(Component)]

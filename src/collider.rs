@@ -7,13 +7,13 @@ mod rect;
 mod triangle;
 
 use bevy::{
-    prelude::{Component, Entity, GlobalTransform, Rect as BevyRect, Vec2},
+    prelude::{Component, Entity, GlobalTransform, Rect, Vec2},
     utils::HashSet,
 };
 use bevy_prototype_lyon::prelude::{tess::path::path::Builder, Geometry};
 
 pub use {
-    capsule::Capsule, circle::Circle, line::Line, point::Point, polygon::Polygon, rect::Rect,
+    capsule::Capsule, circle::Circle, line::Line, point::Point, polygon::Polygon, rect::Rectangle,
     triangle::Triangle,
 };
 
@@ -54,7 +54,7 @@ pub enum Collider {
     Line(Line),
     Point(Point),
     Polygon(Polygon),
-    Rect(Rect),
+    Rect(Rectangle),
     //Triangle(Triangle),
 }
 
@@ -106,14 +106,14 @@ impl From<Polygon> for Collider {
     }
 }
 
-impl From<Rect> for Collider {
-    fn from(rect: Rect) -> Self {
+impl From<Rectangle> for Collider {
+    fn from(rect: Rectangle) -> Self {
         Self::Rect(rect)
     }
 }
 
-impl From<BevyRect> for Collider {
-    fn from(rect: BevyRect) -> Self {
+impl From<Rect> for Collider {
+    fn from(rect: Rect) -> Self {
         Self::Rect(rect.into())
     }
 }

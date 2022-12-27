@@ -3,15 +3,15 @@ use crate::transform_ext::TransformPoint2;
 use bevy_prototype_lyon::prelude::tess::{geom::Box2D, path::Winding};
 
 #[derive(Default, Clone, Copy, PartialEq, Debug)]
-pub struct Rect(pub BevyRect);
+pub struct Rectangle(pub Rect);
 
-impl Rect {
-    pub fn new(rect: BevyRect) -> Self {
+impl Rectangle {
+    pub fn new(rect: Rect) -> Self {
         Self(rect)
     }
 
     pub fn from_corners(p0: Vec2, p1: Vec2) -> Self {
-        Self(BevyRect {
+        Self(Rect {
             min: p0.min(p1),
             max: p0.max(p1),
         })
@@ -62,53 +62,53 @@ impl Rect {
     }
 }
 
-impl From<BevyRect> for Rect {
-    fn from(rect: BevyRect) -> Self {
+impl From<Rect> for Rectangle {
+    fn from(rect: Rect) -> Self {
         Self(rect)
     }
 }
 
-impl Transformable for Rect {
+impl Transformable for Rectangle {
     fn to_transformed(&self, transform: &GlobalTransform) -> Self {
-        Self::new(BevyRect {
+        Self::new(Rect {
             min: transform.transform_point2(self.min()),
             max: transform.transform_point2(self.max()),
         })
     }
 }
 
-impl Collides<Capsule> for Rect {
+impl Collides<Capsule> for Rectangle {
     fn collide(&self, other: &Capsule) -> CollisionResult {
         other.collide(self)
     }
 }
 
-impl Collides<Circle> for Rect {
+impl Collides<Circle> for Rectangle {
     fn collide(&self, other: &Circle) -> CollisionResult {
         other.collide(self)
     }
 }
 
-impl Collides<Line> for Rect {
+impl Collides<Line> for Rectangle {
     fn collide(&self, other: &Line) -> CollisionResult {
         other.collide(self)
     }
 }
 
-impl Collides<Point> for Rect {
+impl Collides<Point> for Rectangle {
     fn collide(&self, other: &Point) -> CollisionResult {
         self.contains(other.0).into()
     }
 }
 
-impl Collides<Polygon> for Rect {
+impl Collides<Polygon> for Rectangle {
     fn collide(&self, other: &Polygon) -> CollisionResult {
         other.collide(self)
     }
 }
 
-impl Collides<Rect> for Rect {
-    fn collide(&self, other: &Rect) -> CollisionResult {
+impl Collides<Rectangle> for Rectangle {
+    fn collide(&self, other: &Rectangle) -> CollisionResult {
         (self.min().x <= other.max().x
             && self.min().y <= other.max().y
             && self.max().x >= other.min().x
@@ -117,14 +117,14 @@ impl Collides<Rect> for Rect {
     }
 }
 
-impl Collides<Triangle> for Rect {
+impl Collides<Triangle> for Rectangle {
     fn collide(&self, other: &Triangle) -> CollisionResult {
         todo!()
     }
 }
 
 #[cfg(feature = "debug-draw")]
-impl Geometry for Rect {
+impl Geometry for Rectangle {
     fn add_geometry(&self, b: &mut Builder) {
         b.add_rectangle(
             &Box2D::new(

@@ -9,7 +9,7 @@ pub mod draw;
 pub mod prelude {
     pub use super::collider::{
         Capsule, Circle, Collider, Collides, Colliding, CollisionResult, Line, Point, Polygon,
-        Rect, Transformable, Triangle,
+        Rectangle, Transformable, Triangle,
     };
     pub use super::draw::{DrawCollider, DrawColliderShape, DrawColors};
     pub use super::layers::{CollisionLayerFlags, CollisionLayers, CollisionLayersLabel};

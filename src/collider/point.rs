@@ -61,8 +61,8 @@ impl Collides<Polygon> for Point {
     }
 }
 
-impl Collides<Rect> for Point {
-    fn collide(&self, other: &Rect) -> CollisionResult {
+impl Collides<Rectangle> for Point {
+    fn collide(&self, other: &Rectangle) -> CollisionResult {
         other.collide(self)
     }
 }

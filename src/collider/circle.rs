@@ -75,8 +75,8 @@ impl Collides<Polygon> for Circle {
     }
 }
 
-impl Collides<Rect> for Circle {
-    fn collide(&self, other: &Rect) -> CollisionResult {
+impl Collides<Rectangle> for Circle {
+    fn collide(&self, other: &Rectangle) -> CollisionResult {
         ((self.position - self.position.clamp(other.min(), other.max())).length_squared()
             <= self.radius_squared())
         .into()

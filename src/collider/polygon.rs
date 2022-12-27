@@ -133,8 +133,8 @@ impl Collides<Polygon> for Polygon {
     }
 }
 
-impl Collides<Rect> for Polygon {
-    fn collide(&self, other: &Rect) -> CollisionResult {
+impl Collides<Rectangle> for Polygon {
+    fn collide(&self, other: &Rectangle) -> CollisionResult {
         (self.contains(other.min())
             || self.contains(other.max())
             || self.edges().any(|edge| edge.collide(other).colliding))
