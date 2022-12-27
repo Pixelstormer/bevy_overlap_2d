@@ -1,10 +1,9 @@
 use super::{
     collider::*,
-    draw::*,
+    draw::DrawPlugin,
     layers::{CollisionLayers, CollisionLayersLabel},
 };
 use bevy::prelude::*;
-use bevy_prototype_lyon::prelude::ShapePlugin;
 
 #[derive(StageLabel)]
 pub struct CollisionStage;
@@ -115,12 +114,6 @@ impl ColliderBundle {
     }
 }
 
-#[derive(Bundle, Default)]
-pub struct ColliderDrawBundle {
-    pub draw: DrawCollider,
-    pub visibility: VisibilityBundle,
-}
-
 pub struct CollisionPlugin;
 
 impl Plugin for CollisionPlugin {
@@ -128,14 +121,7 @@ impl Plugin for CollisionPlugin {
         app.add_event::<CollisionEvent>();
 
         #[cfg(feature = "debug-draw")]
-        {
-            app.add_plugin(ShapePlugin)
-                .init_resource::<DrawColors>()
-                .add_system(draw_colliders)
-                .add_system(update_colliders)
-                .add_system(update_colors)
-                .add_system(undraw_colliders);
-        }
+        app.add_plugin(DrawPlugin);
 
         app.add_stage_after(
             CoreStage::Update,

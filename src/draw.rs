@@ -1,6 +1,25 @@
 use super::collider::{Collider, Colliding};
 use bevy::prelude::*;
-use bevy_prototype_lyon::prelude::{DrawMode, GeometryBuilder, StrokeMode};
+use bevy_prototype_lyon::prelude::{DrawMode, GeometryBuilder, ShapePlugin, StrokeMode};
+
+pub struct DrawPlugin;
+
+impl Plugin for DrawPlugin {
+    fn build(&self, app: &mut App) {
+        app.add_plugin(ShapePlugin)
+            .init_resource::<DrawColors>()
+            .add_system(draw_colliders)
+            .add_system(update_colliders)
+            .add_system(update_colors)
+            .add_system(undraw_colliders);
+    }
+}
+
+#[derive(Bundle, Default)]
+pub struct ColliderDrawBundle {
+    pub draw: DrawCollider,
+    pub visibility: VisibilityBundle,
+}
 
 #[derive(Resource)]
 pub struct DrawColors {

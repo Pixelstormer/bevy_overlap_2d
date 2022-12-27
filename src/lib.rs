@@ -11,11 +11,13 @@ pub mod prelude {
         Capsule, Circle, Collider, Collides, Colliding, CollisionResult, Line, Point, Polygon,
         Rectangle, Transformable, Triangle,
     };
-    pub use super::draw::{DrawCollider, DrawColliderShape, DrawColors};
+    pub use super::draw::{
+        ColliderDrawBundle, DrawCollider, DrawColliderShape, DrawColors, DrawPlugin,
+    };
     pub use super::layers::{CollisionLayerFlags, CollisionLayers, CollisionLayersLabel};
     pub use super::plugin::{
-        ColliderBundle, ColliderDrawBundle, CollisionBegan, CollisionEnded, CollisionEvent,
-        CollisionPlugin, CollisionStage,
+        ColliderBundle, CollisionBegan, CollisionEnded, CollisionEvent, CollisionPlugin,
+        CollisionStage,
     };
     pub use bevy_overlap_2d_derive::CollisionLayersLabel;
 }
