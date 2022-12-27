@@ -74,7 +74,7 @@ impl Polygon {
     }
 
     pub fn contains(&self, point: Vec2) -> bool {
-        self.winding_number(point) > 0
+        self.winding_number(point) != 0
     }
 }
 
