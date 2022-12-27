@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 use bevy_overlap_2d::{
-    Circle, ColliderBundle, ColliderDrawBundle, Colliding, CollisionLayerLabel,
-    CollisionLayersLabel, CollisionPlugin,
+    Capsule, ColliderBundle, ColliderDrawBundle, Colliding, CollisionLayerLabel,
+    CollisionLayersLabel, CollisionPlugin, Line,
 };
 
 #[derive(Component)]
@@ -38,110 +38,88 @@ fn spawn_world(mut commands: Commands) {
         ColliderBundle::point(Vec2::ZERO).with_layers_inclusive(CursorPickable),
         Cursor,
         Picked::default(),
-        ColliderDrawBundle::default(),
     ));
 
+    spawn_row(-100.0, &mut commands);
+    spawn_row(100.0, &mut commands);
+}
+
+fn spawn_row(y: f32, commands: &mut Commands) {
     commands
         .spawn((
-            ColliderBundle::capsule(30.0, 15.0),
+            ColliderBundle::capsule(60.0, 30.0),
             ColliderDrawBundle::default(),
         ))
-        .insert(Transform::from_xyz(-250.0, 50.0, 0.0));
+        .insert(Transform::from_xyz(-250.0, y, 0.0));
 
     commands
-        .spawn((ColliderBundle::circle(25.0), ColliderDrawBundle::default()))
-        .insert(Transform::from_xyz(-150.0, 50.0, 0.0));
+        .spawn((ColliderBundle::circle(50.0), ColliderDrawBundle::default()))
+        .insert(Transform::from_xyz(-150.0, y, 0.0));
 
+    // Spawn the line collider with a hidden capsule to make it easier to pick
+    let line = Line::new(Vec2::new(-20.0, -50.0), Vec2::new(20.0, 50.0));
     commands
         .spawn((
-            ColliderBundle::line(Vec2::new(-10.0, -25.0), Vec2::new(10.0, 25.0)),
-            ColliderDrawBundle::default(),
+            ColliderBundle {
+                collider: Capsule::new(line, 15.0).into(),
+                ..Default::default()
+            }
+            .with_layers_exclusive(CursorPickable),
+            VisibilityBundle::default(),
         ))
-        .insert(Transform::from_xyz(-50.0, 50.0, 0.0));
-
-    commands
-        .spawn((
-            ColliderBundle::point(Vec2::ZERO),
-            ColliderDrawBundle::default(),
-        ))
-        .insert(Transform::from_xyz(50.0, 50.0, 0.0));
-
-    commands
-        .spawn((
-            ColliderBundle::polygon([
-                Vec2::new(-15.0, -25.0),
-                Vec2::new(15.0, -25.0),
-                Vec2::new(25.0, 25.0),
-                Vec2::new(-25.0, 25.0),
-            ]),
-            ColliderDrawBundle::default(),
-        ))
-        .insert(Transform::from_xyz(150.0, 50.0, 0.0));
-
-    commands
-        .spawn((
-            ColliderBundle::rect(Rect::from_center_half_size(
-                Vec2::ZERO,
-                Vec2::new(15.0, 30.0),
-            )),
-            ColliderDrawBundle::default(),
-        ))
-        .insert(Transform::from_xyz(250.0, 50.0, 0.0));
-
-    commands
-        .spawn((
-            ColliderBundle::capsule(30.0, 15.0),
-            ColliderDrawBundle::default(),
-        ))
-        .insert(Transform::from_xyz(-250.0, -50.0, 0.0));
-
-    commands
-        .spawn((ColliderBundle::circle(25.0), ColliderDrawBundle::default()))
-        .insert(Transform::from_xyz(-150.0, -50.0, 0.0));
-
-    commands
-        .spawn((
-            ColliderBundle::line(Vec2::new(-10.0, -25.0), Vec2::new(10.0, 25.0))
+        .insert(Transform::from_xyz(-50.0, y, 0.0))
+        .with_children(|children| {
+            children.spawn((
+                ColliderBundle {
+                    collider: line.into(),
+                    ..Default::default()
+                }
                 .with_layers_inclusive(DebugDrawn),
-            ColliderDrawBundle::default(),
-        ))
-        .insert(Transform::from_xyz(-50.0, -50.0, 0.0))
-        .with_children(|children| {
-            children
-                .spawn(ColliderBundle::capsule(25.0, 10.0).with_layers_exclusive(CursorPickable));
+                ColliderDrawBundle::default(),
+            ));
         });
 
+    // Ditto with a circle for the point collider
     commands
         .spawn((
-            ColliderBundle::point(Vec2::ZERO).with_layers_inclusive(DebugDrawn),
-            ColliderDrawBundle::default(),
+            ColliderBundle::circle(15.0).with_layers_exclusive(CursorPickable),
+            VisibilityBundle::default(),
         ))
-        .insert(Transform::from_xyz(50.0, -50.0, 0.0))
+        .insert(Transform::from_xyz(50.0, y, 0.0))
         .with_children(|children| {
-            children.spawn(ColliderBundle::circle(10.0).with_layers_exclusive(CursorPickable));
+            children.spawn((
+                ColliderBundle::point(Vec2::ZERO).with_layers_inclusive(DebugDrawn),
+                ColliderDrawBundle::default(),
+            ));
         });
 
     commands
         .spawn((
             ColliderBundle::polygon([
-                Vec2::new(-15.0, -25.0),
-                Vec2::new(15.0, -25.0),
-                Vec2::new(25.0, 25.0),
-                Vec2::new(-25.0, 25.0),
+                Vec2::new(0.0, 50.0),
+                Vec2::new(15.0, 10.0),
+                Vec2::new(50.0, 10.0),
+                Vec2::new(21.0, -15.0),
+                Vec2::new(33.0, -50.0),
+                Vec2::new(0.0, -29.0),
+                Vec2::new(-33.0, -50.0),
+                Vec2::new(-21.0, -15.0),
+                Vec2::new(-50.0, 10.0),
+                Vec2::new(-15.0, 10.0),
             ]),
             ColliderDrawBundle::default(),
         ))
-        .insert(Transform::from_xyz(150.0, -50.0, 0.0));
+        .insert(Transform::from_xyz(150.0, y, 0.0));
 
     commands
         .spawn((
             ColliderBundle::rect(Rect::from_center_half_size(
                 Vec2::ZERO,
-                Vec2::new(15.0, 30.0),
+                Vec2::new(30.0, 60.0),
             )),
             ColliderDrawBundle::default(),
         ))
-        .insert(Transform::from_xyz(250.0, -50.0, 0.0));
+        .insert(Transform::from_xyz(250.0, y, 0.0));
 
     // commands
     //     .spawn((
@@ -152,7 +130,7 @@ fn spawn_world(mut commands: Commands) {
     //         ),
     //         ColliderDrawBundle::default(),
     //     ))
-    //     .insert(Transform::from_xyz(150.0, 0.0, 0.0));
+    //     .insert(Transform::from_xyz(150.0, y, 0.0));
 }
 
 fn update_cursor_position(
