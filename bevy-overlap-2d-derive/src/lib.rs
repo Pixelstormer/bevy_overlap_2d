@@ -1,6 +1,6 @@
 use proc_macro::TokenStream;
 use quote::quote;
-use std::sync::atomic::AtomicU8;
+use std::sync::atomic::{AtomicU8, Ordering};
 use syn::{parse_macro_input, DeriveInput};
 
 /// Generates an impl of the `CollisionLayerLabel` trait.
@@ -13,9 +13,12 @@ pub fn derive_collision_layer_label(input: TokenStream) -> TokenStream {
 fn impl_collision_layer_label(ast: &DeriveInput) -> TokenStream {
     static BIT_NUMBER: AtomicU8 = AtomicU8::new(0);
 
-    let name = &ast.ident;
-    let bit = 1u64 << BIT_NUMBER.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+    let shift = BIT_NUMBER.fetch_add(1, Ordering::Relaxed);
+    let bit = 1u64
+        .checked_shl(shift.into())
+        .expect("Too many collision layers - Exceeded the maximum limit of 64");
 
+    let name = &ast.ident;
     let output = quote! {
         impl ::bevy_overlap_2d::CollisionLayersLabel for #name {
             fn into_layers(self) -> ::bevy_overlap_2d::CollisionLayerFlags {
