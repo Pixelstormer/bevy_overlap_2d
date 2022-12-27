@@ -42,6 +42,62 @@ fn impl_collision_layers_label(ast: &DeriveInput) -> TokenStream {
                 self | rhs.into_layers()
             }
         }
+
+        impl<T: ::bevy_overlap_2d::prelude::CollisionLayersLabel> ::std::ops::BitAnd<T> for #name {
+            type Output = ::bevy_overlap_2d::prelude::CollisionLayerFlags;
+
+            fn bitand(self, rhs: T) -> Self::Output {
+                self.into_layers() & rhs.into_layers()
+            }
+        }
+
+        impl ::std::ops::BitAnd<#name> for ::bevy_overlap_2d::prelude::CollisionLayerFlags {
+            type Output = ::bevy_overlap_2d::prelude::CollisionLayerFlags;
+
+            fn bitand(self, rhs: #name) -> Self::Output {
+                self & rhs.into_layers()
+            }
+        }
+
+        impl<T: ::bevy_overlap_2d::prelude::CollisionLayersLabel> ::std::ops::BitXor<T> for #name {
+            type Output = ::bevy_overlap_2d::prelude::CollisionLayerFlags;
+
+            fn bitxor(self, rhs: T) -> Self::Output {
+                self.into_layers() ^ rhs.into_layers()
+            }
+        }
+
+        impl ::std::ops::BitXor<#name> for ::bevy_overlap_2d::prelude::CollisionLayerFlags {
+            type Output = ::bevy_overlap_2d::prelude::CollisionLayerFlags;
+
+            fn bitxor(self, rhs: #name) -> Self::Output {
+                self ^ rhs.into_layers()
+            }
+        }
+
+        impl<T: ::bevy_overlap_2d::prelude::CollisionLayersLabel> ::std::ops::Sub<T> for #name {
+            type Output = ::bevy_overlap_2d::prelude::CollisionLayerFlags;
+
+            fn sub(self, rhs: T) -> Self::Output {
+                self.into_layers() - rhs.into_layers()
+            }
+        }
+
+        impl ::std::ops::Sub<#name> for ::bevy_overlap_2d::prelude::CollisionLayerFlags {
+            type Output = ::bevy_overlap_2d::prelude::CollisionLayerFlags;
+
+            fn sub(self, rhs: #name) -> Self::Output {
+                self - rhs.into_layers()
+            }
+        }
+
+        impl ::std::ops::Not for #name {
+            type Output = ::bevy_overlap_2d::prelude::CollisionLayerFlags;
+
+            fn not(self) -> Self::Output {
+                !self.into_layers()
+            }
+        }
     };
 
     output.into()
