@@ -1,4 +1,7 @@
-use bevy::{math::Affine3A, prelude::*};
+use bevy::{
+    math::Affine3A,
+    prelude::{GlobalTransform, Vec2},
+};
 
 pub trait TransformPoint2 {
     fn transform_point2(&self, point: Vec2) -> Vec2;

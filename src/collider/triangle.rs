@@ -1,5 +1,5 @@
 use super::*;
-use bevy::prelude::Vec2;
+use crate::transform_ext::TransformPoint2;
 
 /// A triangle.
 #[derive(Clone, Copy, Default, Debug)]
@@ -84,8 +84,8 @@ impl Collides<Triangle> for Triangle {
 }
 
 #[cfg(feature = "debug-draw")]
-impl bevy_prototype_lyon::geometry::Geometry for Triangle {
-    fn add_geometry(&self, b: &mut bevy_prototype_lyon::prelude::tess::path::path::Builder) {
+impl Geometry for Triangle {
+    fn add_geometry(&self, b: &mut Builder) {
         b.begin((self.a.x, self.a.y).into());
         b.line_to((self.b.x, self.b.y).into());
         b.line_to((self.c.x, self.c.y).into());

@@ -20,23 +20,23 @@ fn impl_collision_layers_label(ast: &DeriveInput) -> TokenStream {
 
     let name = &ast.ident;
     let output = quote! {
-        impl ::bevy_overlap_2d::CollisionLayersLabel for #name {
-            fn into_layers(self) -> ::bevy_overlap_2d::CollisionLayerFlags {
+        impl ::bevy_overlap_2d::prelude::CollisionLayersLabel for #name {
+            fn into_layers(self) -> ::bevy_overlap_2d::prelude::CollisionLayerFlags {
                 /// SAFETY: All bits are valid flags, so this can never produce an invalid value
-                unsafe { ::bevy_overlap_2d::CollisionLayerFlags::from_bits_unchecked(#bit) }
+                unsafe { ::bevy_overlap_2d::prelude::CollisionLayerFlags::from_bits_unchecked(#bit) }
             }
         }
 
-        impl<T: ::bevy_overlap_2d::CollisionLayersLabel> ::std::ops::BitOr<T> for #name {
-            type Output = ::bevy_overlap_2d::CollisionLayerFlags;
+        impl<T: ::bevy_overlap_2d::prelude::CollisionLayersLabel> ::std::ops::BitOr<T> for #name {
+            type Output = ::bevy_overlap_2d::prelude::CollisionLayerFlags;
 
             fn bitor(self, rhs: T) -> Self::Output {
                 self.into_layers() | rhs.into_layers()
             }
         }
 
-        impl ::std::ops::BitOr<#name> for ::bevy_overlap_2d::CollisionLayerFlags {
-            type Output = ::bevy_overlap_2d::CollisionLayerFlags;
+        impl ::std::ops::BitOr<#name> for ::bevy_overlap_2d::prelude::CollisionLayerFlags {
+            type Output = ::bevy_overlap_2d::prelude::CollisionLayerFlags;
 
             fn bitor(self, rhs: #name) -> Self::Output {
                 self | rhs.into_layers()

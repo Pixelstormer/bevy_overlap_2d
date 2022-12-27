@@ -1,6 +1,5 @@
 use super::*;
 use crate::transform_ext::TransformPoint2;
-use bevy::prelude::Vec2;
 use bevy_prototype_lyon::prelude::tess::geom::LineSegment;
 
 /// A straight line connecting two points.
@@ -209,8 +208,8 @@ impl Collides<Triangle> for Line {
 }
 
 #[cfg(feature = "debug-draw")]
-impl bevy_prototype_lyon::geometry::Geometry for Line {
-    fn add_geometry(&self, b: &mut bevy_prototype_lyon::prelude::tess::path::path::Builder) {
+impl Geometry for Line {
+    fn add_geometry(&self, b: &mut Builder) {
         b.add_line_segment(&LineSegment {
             from: (self.start.x, self.start.y).into(),
             to: (self.end.x, self.end.y).into(),

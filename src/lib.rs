@@ -1,20 +1,27 @@
-mod collider;
-mod layers;
-mod plugin;
-mod transform_ext;
+pub mod collider;
+pub mod layers;
+pub mod plugin;
+pub mod transform_ext;
 
 #[cfg(feature = "debug-draw")]
-mod draw;
+pub mod draw;
 
-pub use bevy_overlap_2d_derive::CollisionLayersLabel;
-pub use collider::*;
-pub use layers::*;
-pub use plugin::*;
+pub mod prelude {
+    pub use super::collider::{
+        Capsule, Circle, Collider, Collides, Colliding, CollisionResult, Line, Point, Polygon,
+        Rect, Transformable, Triangle,
+    };
+    pub use super::draw::{DrawCollider, DrawColliderShape, DrawColors};
+    pub use super::layers::{CollisionLayerFlags, CollisionLayers, CollisionLayersLabel};
+    pub use super::plugin::{
+        ColliderBundle, ColliderDrawBundle, CollisionBegan, CollisionEnded, CollisionEvent,
+        CollisionPlugin, CollisionStage,
+    };
+    pub use bevy_overlap_2d_derive::CollisionLayersLabel;
+}
 
 #[cfg(test)]
 mod tests {
-    use super::*;
-
     #[test]
     fn it_works() {
         //let result = add(2, 2);

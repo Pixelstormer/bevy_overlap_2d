@@ -1,4 +1,4 @@
-use crate::{Collider, Colliding};
+use super::collider::{Collider, Colliding};
 use bevy::prelude::*;
 use bevy_prototype_lyon::prelude::{DrawMode, GeometryBuilder, StrokeMode};
 

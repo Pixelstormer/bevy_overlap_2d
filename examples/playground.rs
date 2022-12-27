@@ -1,8 +1,5 @@
-use bevy::prelude::*;
-use bevy_overlap_2d::{
-    Capsule, ColliderBundle, ColliderDrawBundle, Colliding, CollisionLayersLabel, CollisionPlugin,
-    Line,
-};
+use bevy::prelude::{Rect, *};
+use bevy_overlap_2d::prelude::*;
 
 #[derive(Component)]
 struct Cursor;

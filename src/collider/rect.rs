@@ -1,6 +1,6 @@
 use super::*;
-use bevy::prelude::{Rect as BevyRect, Vec2};
-use bevy_prototype_lyon::prelude::tess::geom::Box2D;
+use crate::transform_ext::TransformPoint2;
+use bevy_prototype_lyon::prelude::tess::{geom::Box2D, path::Winding};
 
 #[derive(Default, Clone, Copy, PartialEq, Debug)]
 pub struct Rect(pub BevyRect);
@@ -124,14 +124,14 @@ impl Collides<Triangle> for Rect {
 }
 
 #[cfg(feature = "debug-draw")]
-impl bevy_prototype_lyon::geometry::Geometry for Rect {
-    fn add_geometry(&self, b: &mut bevy_prototype_lyon::prelude::tess::path::path::Builder) {
+impl Geometry for Rect {
+    fn add_geometry(&self, b: &mut Builder) {
         b.add_rectangle(
             &Box2D::new(
                 (self.min().x, self.min().y).into(),
                 (self.max().x, self.max().y).into(),
             ),
-            bevy_prototype_lyon::prelude::tess::path::Winding::Positive,
+            Winding::Positive,
         );
     }
 }

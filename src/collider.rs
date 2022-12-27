@@ -6,10 +6,15 @@ mod polygon;
 mod rect;
 mod triangle;
 
-use bevy::prelude::{Component, GlobalTransform, Rect as BevyRect, Transform, Vec2};
+use bevy::{
+    prelude::{Component, Entity, GlobalTransform, Rect as BevyRect, Vec2},
+    utils::HashSet,
+};
+use bevy_prototype_lyon::prelude::{tess::path::path::Builder, Geometry};
+
 pub use {
-    super::transform_ext::TransformPoint2, capsule::Capsule, circle::Circle, line::Line,
-    point::Point, polygon::Polygon, rect::Rect, triangle::Triangle,
+    capsule::Capsule, circle::Circle, line::Line, point::Point, polygon::Polygon, rect::Rect,
+    triangle::Triangle,
 };
 
 pub trait Transformable {
@@ -38,6 +43,9 @@ impl From<bool> for CollisionResult {
         Self { colliding }
     }
 }
+
+#[derive(Component, Default, Debug)]
+pub struct Colliding(pub HashSet<Entity>);
 
 #[derive(Clone, Component, Debug)]
 pub enum Collider {
@@ -187,8 +195,8 @@ impl Collides<Collider> for Collider {
 }
 
 #[cfg(feature = "debug-draw")]
-impl bevy_prototype_lyon::geometry::Geometry for Collider {
-    fn add_geometry(&self, b: &mut bevy_prototype_lyon::prelude::tess::path::path::Builder) {
+impl Geometry for Collider {
+    fn add_geometry(&self, b: &mut Builder) {
         match self {
             Collider::Capsule(shape) => shape.add_geometry(b),
             Collider::Circle(shape) => shape.add_geometry(b),

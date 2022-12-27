@@ -1,23 +1,10 @@
-use super::collider::{Collider, Collides, CollisionResult};
-use super::draw::draw_colliders;
-use crate::{
-    collider::Transformable,
-    draw::{undraw_colliders, update_colliders, update_colors, DrawCollider, DrawColors},
-    Capsule, Circle, CollisionLayerFlags, CollisionLayers, CollisionLayersLabel, Line, Point,
-    Polygon, Rect, Triangle,
+use super::{
+    collider::{Rect, *},
+    draw::*,
+    layers::{CollisionLayers, CollisionLayersLabel},
 };
-use bevy::{
-    prelude::Rect as BevyRect,
-    prelude::*,
-    render::render_phase::Draw,
-    utils::{define_label, HashMap, HashSet},
-};
+use bevy::prelude::{Rect as BevyRect, *};
 use bevy_prototype_lyon::prelude::ShapePlugin;
-use bitflags::bitflags;
-use std::any::TypeId;
-
-#[derive(Component, Default, Debug)]
-pub struct Colliding(pub HashSet<Entity>);
 
 #[derive(StageLabel)]
 pub struct CollisionStage;

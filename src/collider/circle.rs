@@ -1,6 +1,6 @@
 use super::*;
 use crate::transform_ext::TransformPoint2;
-use bevy::prelude::{Transform, Vec2};
+use bevy_prototype_lyon::prelude::tess::path::Winding;
 use std::f32::consts::{PI, TAU};
 
 #[derive(Clone, Copy, Default, Debug)]
@@ -90,12 +90,8 @@ impl Collides<Triangle> for Circle {
 }
 
 #[cfg(feature = "debug-draw")]
-impl bevy_prototype_lyon::geometry::Geometry for Circle {
-    fn add_geometry(&self, b: &mut bevy_prototype_lyon::prelude::tess::path::path::Builder) {
-        b.add_circle(
-            (0.0, 0.0).into(),
-            self.radius,
-            bevy_prototype_lyon::prelude::tess::path::Winding::Positive,
-        );
+impl Geometry for Circle {
+    fn add_geometry(&self, b: &mut Builder) {
+        b.add_circle((0.0, 0.0).into(), self.radius, Winding::Positive);
     }
 }

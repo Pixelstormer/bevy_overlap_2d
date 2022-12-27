@@ -1,6 +1,5 @@
-use bevy::prelude::*;
+use bevy::prelude::Component;
 use bitflags::bitflags;
-use std::ops::BitOr;
 
 pub trait CollisionLayersLabel {
     fn into_layers(self) -> CollisionLayerFlags;

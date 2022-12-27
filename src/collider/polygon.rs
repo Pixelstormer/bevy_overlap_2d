@@ -1,8 +1,6 @@
-use std::iter::FusedIterator;
-
 use super::*;
 use crate::transform_ext::TransformPoint2;
-use bevy::prelude::Vec2;
+use std::iter::FusedIterator;
 
 /// An arbitrary polygon.
 #[derive(Clone, Default, Debug)]
@@ -151,15 +149,11 @@ impl Collides<Triangle> for Polygon {
 }
 
 #[cfg(feature = "debug-draw")]
-impl bevy_prototype_lyon::geometry::Geometry for Polygon {
-    fn add_geometry(&self, b: &mut bevy_prototype_lyon::prelude::tess::path::path::Builder) {
+impl Geometry for Polygon {
+    fn add_geometry(&self, b: &mut Builder) {
         let mut iter = self.vertices.iter();
 
-        let first = if let Some(first) = iter.next() {
-            first
-        } else {
-            return;
-        };
+        let Some(first) = iter.next() else { return; };
 
         b.begin((first.x, first.y).into());
 
