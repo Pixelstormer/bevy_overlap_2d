@@ -2,7 +2,7 @@ use super::*;
 use crate::transform_ext::TransformPoint2;
 
 /// A triangle.
-#[derive(Clone, Copy, Default, Debug)]
+#[derive(Clone, Copy, Default, Debug, PartialEq)]
 pub struct Triangle {
     pub a: Vec2,
     pub b: Vec2,

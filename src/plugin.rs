@@ -26,7 +26,7 @@ impl Plugin for CollisionPlugin {
     }
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Copy, Debug)]
 pub enum CollisionEvent {
     Began(CollisionBegan),
     Ended(CollisionEnded),
@@ -42,19 +42,19 @@ impl CollisionEvent {
     }
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Copy, Debug)]
 pub struct CollisionBegan {
     pub a: Entity,
     pub b: Entity,
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Copy, Debug)]
 pub struct CollisionEnded {
     pub a: Entity,
     pub b: Entity,
 }
 
-#[derive(Bundle, Default)]
+#[derive(Bundle, Default, Debug)]
 pub struct ColliderBundle {
     pub collider: Collider,
     pub colliding: Colliding,

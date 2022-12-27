@@ -3,7 +3,7 @@ use crate::transform_ext::TransformPoint2;
 use bevy_prototype_lyon::prelude::tess::path::Winding;
 use std::f32::consts::{PI, TAU};
 
-#[derive(Clone, Copy, Default, Debug)]
+#[derive(Clone, Copy, Default, Debug, PartialEq)]
 pub struct Circle {
     pub position: Vec2,
     pub radius: f32,

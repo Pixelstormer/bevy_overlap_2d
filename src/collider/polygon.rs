@@ -3,7 +3,7 @@ use crate::transform_ext::TransformPoint2;
 use std::iter::FusedIterator;
 
 /// An arbitrary polygon.
-#[derive(Clone, Default, Debug)]
+#[derive(Clone, Default, Debug, PartialEq)]
 pub struct Polygon {
     pub vertices: Vec<Vec2>,
 }

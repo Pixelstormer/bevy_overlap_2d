@@ -2,7 +2,7 @@ use super::*;
 use crate::transform_ext::TransformPoint2;
 use bevy_prototype_lyon::prelude::tess::geom::LineSegment;
 
-#[derive(Clone, Copy, PartialEq, Default, Debug)]
+#[derive(Clone, Copy, Default, Debug, PartialEq)]
 pub struct Point(pub Vec2);
 
 impl Point {

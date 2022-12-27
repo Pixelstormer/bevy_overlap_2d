@@ -25,7 +25,7 @@ pub trait Collides<T>: Transformable {
     fn collide(&self, other: &T) -> CollisionResult;
 }
 
-#[derive(Clone, Default, Debug)]
+#[derive(Clone, Copy, Default, Debug, PartialEq, Eq)]
 pub struct CollisionResult {
     pub colliding: bool,
     // pub penetration_depth: f32,
@@ -44,10 +44,10 @@ impl From<bool> for CollisionResult {
     }
 }
 
-#[derive(Component, Default, Debug)]
+#[derive(Component, Clone, Default, Debug, PartialEq, Eq)]
 pub struct Colliding(pub HashSet<Entity>);
 
-#[derive(Clone, Component, Debug)]
+#[derive(Clone, Component, Debug, PartialEq)]
 pub enum Collider {
     Capsule(Capsule),
     Circle(Circle),

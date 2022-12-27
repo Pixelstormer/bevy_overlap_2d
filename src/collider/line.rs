@@ -3,7 +3,7 @@ use crate::transform_ext::TransformPoint2;
 use bevy_prototype_lyon::prelude::tess::geom::LineSegment;
 
 /// A straight line connecting two points.
-#[derive(Clone, Copy, Default, Debug)]
+#[derive(Clone, Copy, Default, Debug, PartialEq)]
 pub struct Line {
     pub start: Vec2,
     pub end: Vec2,

@@ -7,7 +7,7 @@ use std::f32::consts::PI;
 
 /// A 2d capsule is a shape that can be imagined as a rectangle with a pair of semicircles attached to
 /// opposite sides, or more formally, the set of all points within a certain distance from a line.
-#[derive(Clone, Copy, Default, Debug)]
+#[derive(Clone, Copy, Default, Debug, PartialEq)]
 pub struct Capsule {
     pub line: Line,
     pub radius: f32,

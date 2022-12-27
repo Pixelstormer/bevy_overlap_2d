@@ -15,13 +15,13 @@ impl Plugin for DrawPlugin {
     }
 }
 
-#[derive(Bundle, Default)]
+#[derive(Bundle, Default, Debug)]
 pub struct ColliderDrawBundle {
     pub draw: DrawCollider,
     pub visibility: VisibilityBundle,
 }
 
-#[derive(Resource)]
+#[derive(Resource, Clone, Copy, Debug, PartialEq)]
 pub struct DrawColors {
     pub disjoint: DrawMode,
     pub colliding: DrawMode,
@@ -36,10 +36,10 @@ impl Default for DrawColors {
     }
 }
 
-#[derive(Clone, Copy, Component, Default)]
+#[derive(Clone, Copy, Component, Default, Debug)]
 pub struct DrawCollider;
 
-#[derive(Clone, Copy, Component, Debug)]
+#[derive(Clone, Copy, Component, Debug, PartialEq, Eq)]
 pub struct DrawColliderShape(Entity);
 
 pub fn draw_colliders(

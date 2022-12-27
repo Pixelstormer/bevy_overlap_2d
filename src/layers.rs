@@ -17,7 +17,7 @@ impl CollisionLayersLabel for CollisionLayerFlags {
     }
 }
 
-#[derive(Clone, Copy, Component, Debug, Default)]
+#[derive(Clone, Copy, Component, Debug, Default, PartialEq, Eq)]
 pub enum CollisionLayers {
     /// Collides with colliders on the None and Inclusive layers
     #[default]
@@ -33,8 +33,7 @@ impl CollisionLayers {
     pub fn flags(&self) -> Option<&CollisionLayerFlags> {
         match self {
             CollisionLayers::None => None,
-            CollisionLayers::Inclusive(flags) => Some(flags),
-            CollisionLayers::Exclusive(flags) => Some(flags),
+            CollisionLayers::Inclusive(flags) | CollisionLayers::Exclusive(flags) => Some(flags),
         }
     }
 

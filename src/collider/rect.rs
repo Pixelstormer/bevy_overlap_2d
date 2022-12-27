@@ -2,7 +2,7 @@ use super::*;
 use crate::transform_ext::TransformPoint2;
 use bevy_prototype_lyon::prelude::tess::{geom::Box2D, path::Winding};
 
-#[derive(Default, Clone, Copy, PartialEq, Debug)]
+#[derive(Clone, Copy, Default, Debug, PartialEq)]
 pub struct Rectangle(pub Rect);
 
 impl Rectangle {
