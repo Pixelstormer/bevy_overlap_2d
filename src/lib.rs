@@ -1,17 +1,15 @@
 mod collider;
+mod layers;
 mod plugin;
 mod transform_ext;
 
 #[cfg(feature = "debug-draw")]
 mod draw;
 
-pub use collider::{
-    Capsule, Circle, Collider, Collides, CollisionResult, Line, Point, Polygon, Rect, Triangle,
-};
-pub use plugin::{
-    ColliderBundle, ColliderDrawBundle, Colliding, CollisionBegan, CollisionEnded, CollisionEvent,
-    CollisionPlugin, CollisionStage,
-};
+pub use bevy_overlap_2d_derive::CollisionLayerLabel;
+pub use collider::*;
+pub use layers::*;
+pub use plugin::*;
 
 #[cfg(test)]
 mod tests {

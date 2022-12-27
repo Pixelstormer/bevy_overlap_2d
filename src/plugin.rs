@@ -3,10 +3,18 @@ use super::draw::draw_colliders;
 use crate::{
     collider::Transformable,
     draw::{undraw_colliders, update_colliders, update_colors, DrawCollider, DrawColors},
-    Capsule, Circle, Line, Point, Polygon, Rect, Triangle,
+    Capsule, Circle, CollisionLayerFlags, CollisionLayers, CollisionLayersLabel, Line, Point,
+    Polygon, Rect, Triangle,
 };
-use bevy::{prelude::Rect as BevyRect, prelude::*, render::render_phase::Draw, utils::HashSet};
+use bevy::{
+    prelude::Rect as BevyRect,
+    prelude::*,
+    render::render_phase::Draw,
+    utils::{define_label, HashMap, HashSet},
+};
 use bevy_prototype_lyon::prelude::ShapePlugin;
+use bitflags::bitflags;
+use std::any::TypeId;
 
 #[derive(Component, Default, Debug)]
 pub struct Colliding(pub HashSet<Entity>);
@@ -46,6 +54,7 @@ pub struct CollisionEnded {
 pub struct ColliderBundle {
     pub collider: Collider,
     pub colliding: Colliding,
+    pub layers: CollisionLayers,
     pub transform: TransformBundle,
 }
 
@@ -103,6 +112,20 @@ impl ColliderBundle {
     //         ..Default::default()
     //     }
     // }
+
+    /// Specifies that this collider will only interact with other colliders that have matching layers,
+    /// including colliders that have no specified layer
+    pub fn with_layers_inclusive(mut self, layers: impl CollisionLayersLabel) -> Self {
+        self.layers = CollisionLayers::Inclusive(layers.into_layers());
+        self
+    }
+
+    /// Specifies that this collider will only interact with other colliders that have matching layers,
+    /// excluding colliders that have no specified layer
+    pub fn with_layers_exclusive(mut self, layers: impl CollisionLayersLabel) -> Self {
+        self.layers = CollisionLayers::Exclusive(layers.into_layers());
+        self
+    }
 }
 
 #[derive(Bundle, Default)]
@@ -138,7 +161,13 @@ impl Plugin for CollisionPlugin {
 
 fn find_colliding_pairs(
     mut commands: Commands,
-    mut query: Query<(Entity, &GlobalTransform, &Collider, &mut Colliding)>,
+    mut query: Query<(
+        Entity,
+        &GlobalTransform,
+        &Collider,
+        &CollisionLayers,
+        &mut Colliding,
+    )>,
     mut events: EventWriter<CollisionEvent>,
 ) {
     let size = query.iter_combinations::<2>().size_hint().0;
@@ -146,8 +175,12 @@ fn find_colliding_pairs(
 
     let mut iter = query.iter_combinations_mut();
     while let Some([a, b]) = iter.fetch_next() {
-        let (a_entity, a_transform, a_collider, mut a_colliding) = a;
-        let (b_entity, b_transform, b_collider, mut b_colliding) = b;
+        let (a_entity, a_transform, a_collider, a_layers, mut a_colliding) = a;
+        let (b_entity, b_transform, b_collider, b_layers, mut b_colliding) = b;
+
+        if !a_layers.intersects(b_layers) {
+            continue;
+        }
 
         let result = a_collider
             .to_transformed(a_transform)

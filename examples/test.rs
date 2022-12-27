@@ -1,5 +1,8 @@
 use bevy::prelude::*;
-use bevy_overlap_2d::{Circle, ColliderBundle, ColliderDrawBundle, Colliding, CollisionPlugin};
+use bevy_overlap_2d::{
+    Circle, ColliderBundle, ColliderDrawBundle, Colliding, CollisionLayerLabel,
+    CollisionLayersLabel, CollisionPlugin,
+};
 
 #[derive(Component)]
 struct Cursor;
@@ -9,6 +12,12 @@ struct Picked {
     pub entity: Option<Entity>,
     pub offset: Vec3,
 }
+
+#[derive(CollisionLayerLabel)]
+struct CursorPickable;
+
+#[derive(CollisionLayerLabel)]
+struct DebugDrawn;
 
 fn main() {
     App::new()
@@ -26,7 +35,7 @@ fn spawn_world(mut commands: Commands) {
     commands.spawn(Camera2dBundle::default());
 
     commands.spawn((
-        ColliderBundle::point(Vec2::ZERO),
+        ColliderBundle::point(Vec2::ZERO).with_layers_inclusive(CursorPickable),
         Cursor,
         Picked::default(),
         ColliderDrawBundle::default(),
@@ -92,17 +101,25 @@ fn spawn_world(mut commands: Commands) {
 
     commands
         .spawn((
-            ColliderBundle::line(Vec2::new(-10.0, -25.0), Vec2::new(10.0, 25.0)),
+            ColliderBundle::line(Vec2::new(-10.0, -25.0), Vec2::new(10.0, 25.0))
+                .with_layers_inclusive(DebugDrawn),
             ColliderDrawBundle::default(),
         ))
-        .insert(Transform::from_xyz(-50.0, -50.0, 0.0));
+        .insert(Transform::from_xyz(-50.0, -50.0, 0.0))
+        .with_children(|children| {
+            children
+                .spawn(ColliderBundle::capsule(25.0, 10.0).with_layers_exclusive(CursorPickable));
+        });
 
     commands
         .spawn((
-            ColliderBundle::point(Vec2::ZERO),
+            ColliderBundle::point(Vec2::ZERO).with_layers_inclusive(DebugDrawn),
             ColliderDrawBundle::default(),
         ))
-        .insert(Transform::from_xyz(50.0, -50.0, 0.0));
+        .insert(Transform::from_xyz(50.0, -50.0, 0.0))
+        .with_children(|children| {
+            children.spawn(ColliderBundle::circle(10.0).with_layers_exclusive(CursorPickable));
+        });
 
     commands
         .spawn((
