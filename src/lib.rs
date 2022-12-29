@@ -17,7 +17,7 @@ pub mod prelude {
     pub use super::layers::{CollisionLayerFlags, CollisionLayers, CollisionLayersLabel};
     pub use super::plugin::{
         ColliderBundle, CollisionBegan, CollisionEnded, CollisionEvent, CollisionPlugin,
-        CollisionStage,
+        CollisionStage, FindCollidingPairs,
     };
     pub use bevy_overlap_2d_derive::CollisionLayersLabel;
 }

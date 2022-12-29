@@ -8,6 +8,9 @@ use bevy::prelude::*;
 #[derive(StageLabel)]
 pub struct CollisionStage;
 
+#[derive(SystemLabel)]
+pub struct FindCollidingPairs;
+
 pub struct CollisionPlugin;
 
 impl Plugin for CollisionPlugin {
@@ -22,7 +25,10 @@ impl Plugin for CollisionPlugin {
             CollisionStage,
             SystemStage::single_threaded(),
         )
-        .add_system_to_stage(CollisionStage, find_colliding_pairs);
+        .add_system_to_stage(
+            CollisionStage,
+            find_colliding_pairs.label(FindCollidingPairs),
+        );
     }
 }
 
