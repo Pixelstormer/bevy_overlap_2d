@@ -165,7 +165,7 @@ fn find_colliding_pairs(
             .to_transformed(a_transform)
             .collide(&b_collider.to_transformed(b_transform));
 
-        if result.colliding() {
+        if result.is_colliding() {
             let a_was_disjoint = a_colliding.0.insert(b_entity);
             let b_was_disjoint = b_colliding.0.insert(a_entity);
             if a_was_disjoint && b_was_disjoint {

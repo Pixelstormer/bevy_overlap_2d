@@ -10,6 +10,22 @@ pub enum ContactManifold {
 }
 
 impl ContactManifold {
+    pub fn disjoint() -> Self {
+        Self::Disjoint
+    }
+
+    pub fn point(us: Vec2, them: Vec2, normal: Vec2) -> Self {
+        Self::Point(ContactPoint::new(us, them, normal))
+    }
+
+    pub fn edge(us: Line, them: Line, normal: Vec2) -> Self {
+        Self::Edge(ContactEdge::new(us, them, normal))
+    }
+
+    pub fn coincident(point: Vec2) -> Self {
+        Self::Coincident(point)
+    }
+
     pub fn new_lazy(colliding: bool, contact: impl FnOnce() -> Self) -> Self {
         if colliding {
             contact()
@@ -22,12 +38,12 @@ impl ContactManifold {
         *self = self.neg();
     }
 
-    pub fn disjoint(&self) -> bool {
+    pub fn is_disjoint(&self) -> bool {
         matches!(self, Self::Disjoint)
     }
 
-    pub fn colliding(&self) -> bool {
-        !self.disjoint()
+    pub fn is_colliding(&self) -> bool {
+        !self.is_disjoint()
     }
 }
 
@@ -70,13 +86,14 @@ impl<T: Into<ContactManifold>> From<Option<T>> for ContactManifold {
 
 #[derive(Clone, Copy, Default, PartialEq, Debug)]
 pub struct ContactPoint {
-    us: Vec2,
-    them: Vec2,
-    normal: Vec2,
+    pub us: Vec2,
+    pub them: Vec2,
+    pub normal: Vec2,
 }
 
 impl ContactPoint {
     pub fn new(us: Vec2, them: Vec2, normal: Vec2) -> Self {
+        debug_assert!(normal.is_normalized());
         Self { us, them, normal }
     }
 
@@ -107,13 +124,15 @@ impl Neg for ContactPoint {
 
 #[derive(Clone, Copy, Default, PartialEq, Debug)]
 pub struct ContactEdge {
-    us: Line,
-    them: Line,
-    normal: Vec2,
+    pub us: Line,
+    pub them: Line,
+    pub normal: Vec2,
 }
 
 impl ContactEdge {
     pub fn new(us: Line, them: Line, normal: Vec2) -> Self {
+        debug_assert!(normal.is_normalized());
+        debug_assert!(us.is_parallel_to(&them));
         Self { us, them, normal }
     }
 
