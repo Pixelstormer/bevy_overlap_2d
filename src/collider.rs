@@ -13,6 +13,7 @@ use bevy::{
     utils::HashSet,
 };
 use bevy_prototype_lyon::prelude::{tess::path::path::Builder, Geometry};
+use std::ops::Neg;
 
 pub use {
     capsule::Capsule,

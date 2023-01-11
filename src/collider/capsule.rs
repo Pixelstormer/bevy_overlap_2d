@@ -41,9 +41,7 @@ impl Collides<Capsule> for Capsule {
 
 impl Collides<Circle> for Capsule {
     fn collide(&self, other: &Circle) -> ContactManifold {
-        (self.line.distance_to_point_squared(&other.position)
-            <= (self.radius + other.radius).powi(2))
-        .into()
+        algorithms::collide_capsule_circle(self, other)
     }
 }
 

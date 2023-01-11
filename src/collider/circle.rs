@@ -51,7 +51,7 @@ impl Transformable for Circle {
 
 impl Collides<Capsule> for Circle {
     fn collide(&self, other: &Capsule) -> ContactManifold {
-        other.collide(self)
+        algorithms::collide_capsule_circle(other, self).neg()
     }
 }
 

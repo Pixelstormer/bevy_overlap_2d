@@ -33,7 +33,21 @@ pub fn collide_capsule_capsule(us: &Capsule, them: &Capsule) -> ContactManifold 
     }
 }
 
-pub fn collide_capsule_circle(us: &Capsule, them: &Circle) -> ContactManifold {}
+pub fn collide_capsule_circle(us: &Capsule, them: &Circle) -> ContactManifold {
+    let closest_point = us.line.closest_point_to_point(&them.position);
+    let diff = them.position - closest_point;
+    ContactManifold::new_lazy(
+        diff.length_squared() <= (us.radius + them.radius).powi(2),
+        || {
+            ContactPoint::new(
+                closest_point + diff.clamp_length(us.radius, us.radius),
+                them.position - diff.clamp_length(them.radius, them.radius),
+                diff.normalize(),
+            )
+            .into()
+        },
+    )
+}
 
 pub fn collide_capsule_line(us: &Capsule, them: &Line) -> ContactManifold {
     let closest_points = us.line.closest_point_to_line(them);
