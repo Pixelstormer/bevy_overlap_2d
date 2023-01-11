@@ -21,10 +21,6 @@ impl Line {
         Line { start, end }
     }
 
-    pub fn as_difference(&self) -> Vec2 {
-        self.end - self.start
-    }
-
     pub fn length(&self) -> f32 {
         self.as_difference().length()
     }
@@ -33,12 +29,73 @@ impl Line {
         self.as_difference().length_squared()
     }
 
+    pub fn as_difference(&self) -> Vec2 {
+        self.end - self.start
+    }
+
+    pub fn perp(&self) -> Vec2 {
+        self.as_difference().perp()
+    }
+
     pub fn is_point(&self) -> bool {
         self.start == self.end
     }
 
     pub fn is_parallel_to(&self, other: &Self) -> bool {
         self.as_difference().perp_dot(other.as_difference()).abs() <= f32::EPSILON
+    }
+
+    /// Checks whether or not `point` intersects `self`.
+    ///
+    /// `point` must lie somewhere on the infinite line through `self`.
+    pub fn intersects_colinear_point(&self, point: &Vec2) -> bool {
+        if self.start.x != self.end.x {
+            // S is not vertical
+            (self.start.x <= point.x && point.x <= self.end.x)
+                || (self.start.x >= point.x && point.x >= self.end.x)
+        } else {
+            // S is vertical, so test y coordinate
+            (self.start.y <= point.y && point.y <= self.end.y)
+                || (self.start.y >= point.y && point.y >= self.end.y)
+        }
+    }
+
+    /// Clips `self` to `other`. Returns `None` if there is no overlap between `self` and `other`.
+    ///
+    /// `self` and `other` must be parallel.
+    pub fn clip_to_parallel_line(&self, other: &Self) -> Option<Self> {
+        debug_assert!(self.is_parallel_to(other));
+
+        let direction = self.as_difference().normalize();
+
+        let start_pos = direction.dot(other.start);
+        let end_pos = direction.dot(other.end);
+        if start_pos > end_pos {
+            std::mem::swap(&mut start_pos, &mut end_pos);
+        }
+
+        let new_start = if start_pos <= 0.0 {
+            if end_pos < 0.0 {
+                return None;
+            }
+
+            self.start
+        } else {
+            self.start + (direction * start_pos)
+        };
+
+        let self_end_pos = direction.dot(self.end);
+        let new_end = if end_pos >= self_end_pos {
+            if start_pos > self_end_pos {
+                return None;
+            }
+
+            self.end
+        } else {
+            self.start + (direction * end_pos)
+        };
+
+        Some(Self::new(new_start, new_end))
     }
 
     /// Gets a point on the infinite line through `self` according to the parametric line equation:
@@ -109,18 +166,6 @@ impl Line {
     ///
     /// From https://web.archive.org/web/20210428000731/http://geomalgorithms.com/a05-_intersect-1.html
     pub fn intersect_line(&self, other: &Self) -> LineIntersection {
-        fn is_point_on_colinear_line(point: Vec2, line: &Line) -> bool {
-            if line.start.x != line.end.x {
-                // S is not vertical
-                (line.start.x <= point.x && point.x <= line.end.x)
-                    || (line.start.x >= point.x && point.x >= line.end.x)
-            } else {
-                // S is vertical, so test y coordinate
-                (line.start.y <= point.y && point.y <= line.end.y)
-                    || (line.start.y >= point.y && point.y >= line.end.y)
-            }
-        }
-
         let u = self.as_difference();
         let v = other.as_difference();
         let w = self.start - other.start;
@@ -158,11 +203,13 @@ impl Line {
                         .then_some(LineIntersection::Intersecting(self.start))
                         .unwrap_or(LineIntersection::Disjoint),
                     // S1 is a single point
-                    (true, false) => is_point_on_colinear_line(self.start, other)
+                    (true, false) => other
+                        .intersects_colinear_point(&self.start)
                         .then_some(LineIntersection::Intersecting(self.start))
                         .unwrap_or(LineIntersection::Disjoint),
                     // S2 a single point
-                    (false, true) => is_point_on_colinear_line(other.start, self)
+                    (false, true) => self
+                        .intersects_colinear_point(&other.start)
                         .then_some(LineIntersection::Intersecting(other.start))
                         .unwrap_or(LineIntersection::Disjoint),
                     (false, false) => {

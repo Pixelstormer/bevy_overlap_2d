@@ -1,6 +1,37 @@
-use super::{line::LineIntersection, *};
+use super::*;
 
-pub fn collide_capsule_capsule(us: &Capsule, them: &Capsule) -> ContactManifold {}
+pub fn collide_capsule_capsule(us: &Capsule, them: &Capsule) -> ContactManifold {
+    let closest_points = us.line.closest_point_to_line(&them.line);
+    if closest_points.is_point() {
+        // The inner lines of the capsules are intersecting
+        ContactManifold::coincident(closest_points.start)
+    } else {
+        let diff = closest_points.as_difference();
+        if diff.length_squared() <= (us.radius + them.radius).powi(2) {
+            if us.line.is_parallel_to(&them.line) {
+                if let Some(us_clipped) = us.line.clip_to_parallel_line(&them.line) {
+                    if let Some(them_clipped) = them.line.clip_to_parallel_line(&us.line) {
+                        // The capsules are parallel
+                        return ContactManifold::edge(
+                            us_clipped,
+                            them_clipped,
+                            closest_points.as_difference().normalize(),
+                        );
+                    }
+                }
+            }
+
+            // Non-parallel capsules can be treated like a pair of circles around the closest points
+            ContactManifold::point(
+                closest_points.start + diff.clamp_length(us.radius, us.radius),
+                closest_points.end - diff.clamp_length(them.radius, them.radius),
+                diff.normalize(),
+            )
+        } else {
+            ContactManifold::disjoint()
+        }
+    }
+}
 
 pub fn collide_capsule_circle(us: &Capsule, them: &Circle) -> ContactManifold {}
 

@@ -35,8 +35,7 @@ impl Transformable for Capsule {
 
 impl Collides<Capsule> for Capsule {
     fn collide(&self, other: &Capsule) -> ContactManifold {
-        (self.line.closest_point_to_line(&other.line) <= (self.radius + other.radius).powi(2))
-            .into()
+        algorithms::collide_capsule_capsule(self, other)
     }
 }
 

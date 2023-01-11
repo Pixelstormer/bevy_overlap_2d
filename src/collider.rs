@@ -18,7 +18,7 @@ pub use {
     capsule::Capsule,
     circle::Circle,
     contact::{ContactEdge, ContactManifold, ContactPoint},
-    line::Line,
+    line::{Line, LineIntersection},
     point::Point,
     polygon::Polygon,
     rect::Rectangle,
