@@ -40,7 +40,7 @@ pub struct Colliding(pub HashSet<Entity>);
 pub enum Collider {
     Capsule(Capsule),
     Circle(Circle),
-    Line(Line),
+    //Line(Line),
     Point(Point),
     Polygon(Polygon),
     Rectangle(Rectangle),
@@ -71,11 +71,11 @@ impl From<Circle> for Collider {
     }
 }
 
-impl From<Line> for Collider {
-    fn from(line: Line) -> Self {
-        Self::Line(line)
-    }
-}
+// impl From<Line> for Collider {
+//     fn from(line: Line) -> Self {
+//         Self::Line(line)
+//     }
+// }
 
 impl From<Point> for Collider {
     fn from(point: Point) -> Self {
@@ -118,7 +118,7 @@ impl Transformable for Collider {
         match self {
             Collider::Capsule(shape) => shape.to_transformed(transform).into(),
             Collider::Circle(shape) => shape.to_transformed(transform).into(),
-            Collider::Line(shape) => shape.to_transformed(transform).into(),
+            // Collider::Line(shape) => shape.to_transformed(transform).into(),
             Collider::Point(shape) => shape.to_transformed(transform).into(),
             Collider::Polygon(shape) => shape.to_transformed(transform).into(),
             Collider::Rectangle(shape) => shape.to_transformed(transform).into(),
@@ -132,42 +132,42 @@ impl Collides<Collider> for Collider {
         match (self, other) {
             (Collider::Capsule(a), Collider::Capsule(b)) => a.collide(b),
             (Collider::Capsule(a), Collider::Circle(b)) => a.collide(b),
-            (Collider::Capsule(a), Collider::Line(b)) => a.collide(b),
+            // (Collider::Capsule(a), Collider::Line(b)) => a.collide(b),
             (Collider::Capsule(a), Collider::Point(b)) => a.collide(b),
             (Collider::Capsule(a), Collider::Polygon(b)) => a.collide(b),
             (Collider::Capsule(a), Collider::Rectangle(b)) => a.collide(b),
             // (Collider::Capsule(a), Collider::Triangle(b)) => a.collide(b),
             (Collider::Circle(a), Collider::Capsule(b)) => a.collide(b),
             (Collider::Circle(a), Collider::Circle(b)) => a.collide(b),
-            (Collider::Circle(a), Collider::Line(b)) => a.collide(b),
+            // (Collider::Circle(a), Collider::Line(b)) => a.collide(b),
             (Collider::Circle(a), Collider::Point(b)) => a.collide(b),
             (Collider::Circle(a), Collider::Polygon(b)) => a.collide(b),
             (Collider::Circle(a), Collider::Rectangle(b)) => a.collide(b),
             // (Collider::Circle(a), Collider::Triangle(b)) => a.collide(b),
-            (Collider::Line(a), Collider::Capsule(b)) => a.collide(b),
-            (Collider::Line(a), Collider::Circle(b)) => a.collide(b),
-            (Collider::Line(a), Collider::Line(b)) => a.collide(b),
-            (Collider::Line(a), Collider::Point(b)) => a.collide(b),
-            (Collider::Line(a), Collider::Polygon(b)) => a.collide(b),
-            (Collider::Line(a), Collider::Rectangle(b)) => a.collide(b),
+            // (Collider::Line(a), Collider::Capsule(b)) => a.collide(b),
+            // (Collider::Line(a), Collider::Circle(b)) => a.collide(b),
+            // (Collider::Line(a), Collider::Line(b)) => a.collide(b),
+            // (Collider::Line(a), Collider::Point(b)) => a.collide(b),
+            // (Collider::Line(a), Collider::Polygon(b)) => a.collide(b),
+            // (Collider::Line(a), Collider::Rectangle(b)) => a.collide(b),
             // (Collider::Line(a), Collider::Triangle(b)) => a.collide(b),
             (Collider::Point(a), Collider::Capsule(b)) => a.collide(b),
             (Collider::Point(a), Collider::Circle(b)) => a.collide(b),
-            (Collider::Point(a), Collider::Line(b)) => a.collide(b),
+            // (Collider::Point(a), Collider::Line(b)) => a.collide(b),
             (Collider::Point(a), Collider::Point(b)) => a.collide(b),
             (Collider::Point(a), Collider::Polygon(b)) => a.collide(b),
             (Collider::Point(a), Collider::Rectangle(b)) => a.collide(b),
             // (Collider::Point(a), Collider::Triangle(b)) => a.collide(b),
             (Collider::Polygon(a), Collider::Capsule(b)) => a.collide(b),
             (Collider::Polygon(a), Collider::Circle(b)) => a.collide(b),
-            (Collider::Polygon(a), Collider::Line(b)) => a.collide(b),
+            // (Collider::Polygon(a), Collider::Line(b)) => a.collide(b),
             (Collider::Polygon(a), Collider::Point(b)) => a.collide(b),
             (Collider::Polygon(a), Collider::Polygon(b)) => a.collide(b),
             (Collider::Polygon(a), Collider::Rectangle(b)) => a.collide(b),
             // (Collider::Polygon(a), Collider::Triangle(b)) => a.collide(b),
             (Collider::Rectangle(a), Collider::Capsule(b)) => a.collide(b),
             (Collider::Rectangle(a), Collider::Circle(b)) => a.collide(b),
-            (Collider::Rectangle(a), Collider::Line(b)) => a.collide(b),
+            // (Collider::Rectangle(a), Collider::Line(b)) => a.collide(b),
             (Collider::Rectangle(a), Collider::Point(b)) => a.collide(b),
             (Collider::Rectangle(a), Collider::Polygon(b)) => a.collide(b),
             (Collider::Rectangle(a), Collider::Rectangle(b)) => a.collide(b),
@@ -189,7 +189,7 @@ impl Geometry for Collider {
         match self {
             Collider::Capsule(shape) => shape.add_geometry(b),
             Collider::Circle(shape) => shape.add_geometry(b),
-            Collider::Line(shape) => shape.add_geometry(b),
+            // Collider::Line(shape) => shape.add_geometry(b),
             Collider::Point(shape) => shape.add_geometry(b),
             Collider::Polygon(shape) => shape.add_geometry(b),
             Collider::Rectangle(shape) => shape.add_geometry(b),

@@ -88,12 +88,12 @@ impl ColliderBundle {
         }
     }
 
-    pub fn line(start: Vec2, end: Vec2) -> Self {
-        Self {
-            collider: Line::new(start, end).into(),
-            ..Default::default()
-        }
-    }
+    // pub fn line(start: Vec2, end: Vec2) -> Self {
+    //     Self {
+    //         collider: Line::new(start, end).into(),
+    //         ..Default::default()
+    //     }
+    // }
 
     pub fn point(point: Vec2) -> Self {
         Self {
