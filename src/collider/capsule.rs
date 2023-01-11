@@ -53,7 +53,7 @@ impl Collides<Line> for Capsule {
 
 impl Collides<Point> for Capsule {
     fn collide(&self, other: &Point) -> ContactManifold {
-        (self.line.distance_to_point_squared(&other.0) <= self.radius_squared()).into()
+        algorithms::collide_capsule_point(self, other)
     }
 }
 

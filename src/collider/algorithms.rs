@@ -12,11 +12,7 @@ pub fn collide_capsule_capsule(us: &Capsule, them: &Capsule) -> ContactManifold 
                 if let Some(us_clipped) = us.line.clip_to_parallel_line(&them.line) {
                     if let Some(them_clipped) = them.line.clip_to_parallel_line(&us.line) {
                         // The capsules are parallel
-                        return ContactManifold::edge(
-                            us_clipped,
-                            them_clipped,
-                            closest_points.as_difference().normalize(),
-                        );
+                        return ContactManifold::edge(us_clipped, them_clipped, diff.normalize());
                     }
                 }
             }
@@ -49,27 +45,33 @@ pub fn collide_capsule_circle(us: &Capsule, them: &Circle) -> ContactManifold {
     )
 }
 
-pub fn collide_capsule_line(us: &Capsule, them: &Line) -> ContactManifold {
-    let closest_points = us.line.closest_point_to_line(them);
-    if closest_points.length_squared() <= us.radius_squared() {
-        if closest_points.is_point() {
-            ContactManifold::Coincident(closest_points.start).into()
-        } else if us.line.is_parallel_to(them) {
-            ContactEdge::new().into()
-        } else {
-            ContactPoint::new(
-                closest_points.start + closest_points.as_difference().clamp_length_min(us.radius),
-                closest_points.end,
-                closest_points.as_difference().normalize(),
-            )
-            .into()
-        }
+// pub fn collide_capsule_line(us: &Capsule, them: &Line) -> ContactManifold {
+//     let closest_points = us.line.closest_point_to_line(them);
+//     if closest_points.length_squared() <= us.radius_squared() {
+//         if closest_points.is_point() {
+//             ContactManifold::Coincident(closest_points.start).into()
+//         } else if us.line.is_parallel_to(them) {
+//             ContactEdge::new().into()
+//         } else {
+//             ContactPoint::new(
+//                 closest_points.start + closest_points.as_difference().clamp_length_min(us.radius),
+//                 closest_points.end,
+//                 closest_points.as_difference().normalize(),
+//             )
+//             .into()
+//         }
+//     } else {
+//         ContactManifold::Disjoint
+//     }
+// }
+
+pub fn collide_capsule_point(us: &Capsule, them: &Point) -> ContactManifold {
+    if us.line.distance_to_point_squared(&them.0) <= us.radius_squared() {
+        ContactManifold::Coincident(them.0)
     } else {
         ContactManifold::Disjoint
     }
 }
-
-pub fn collide_capsule_point(us: &Capsule, them: &Point) -> ContactManifold {}
 
 pub fn collide_capsule_polygon(us: &Capsule, them: &Polygon) -> ContactManifold {}
 

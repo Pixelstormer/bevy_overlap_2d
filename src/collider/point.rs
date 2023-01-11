@@ -33,7 +33,7 @@ impl Transformable for Point {
 
 impl Collides<Capsule> for Point {
     fn collide(&self, other: &Capsule) -> ContactManifold {
-        other.collide(self)
+        algorithms::collide_capsule_point(other, self).neg()
     }
 }
 
