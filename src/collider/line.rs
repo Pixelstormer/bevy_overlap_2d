@@ -45,6 +45,42 @@ impl Line {
         self.as_difference().perp_dot(other.as_difference()).abs() <= f32::EPSILON
     }
 
+    pub fn is_vertical(&self) -> bool {
+        (self.start.x - self.end.x).abs() <= f32::EPSILON
+    }
+
+    pub fn is_horizontal(&self) -> bool {
+        (self.start.y - self.end.y).abs() <= f32::EPSILON
+    }
+
+    /// Gets a point on the infinite line through `self` according to the parametric line equation:
+    ///
+    /// Negative values of `t` return points 'before' `self.start`.
+    /// `t = 0` returns `self.start`.
+    /// Values of `t` between 0 and 1 return points on `self`.
+    /// `t = 1` returns `self.end`.
+    /// Values of `t` greater than 1 return points 'after' `self.end`.
+    pub fn parametric_point(&self, t: f32) -> Vec2 {
+        self.start + (self.as_difference() * t)
+    }
+
+    /// The y coordinate of the infinite line through `self` at the given x coordinate
+    ///
+    /// When `self` is a vertical line, the return value is arbitrary and meaningless
+    pub fn y_at_x(&self, x: f32) -> f32 {
+        let perp_dot = self.end.perp_dot(self.start);
+        let diff = self.as_difference();
+        (perp_dot + (x * (diff.y))) / (diff.x)
+    }
+
+    /// The x coordinate of the infinite line through `self` at the given y coordinate
+    ///
+    /// When `self` is a horizontal line, the return value is arbitrary and meaningless
+    pub fn x_at_y(&self, y: f32) -> f32 {
+        ((self.end.x * (self.start.y - y)) + (self.start.x * (y - self.end.y)))
+            / (self.start.y - self.end.y)
+    }
+
     /// Checks whether or not `point` intersects `self`.
     ///
     /// `point` must lie somewhere on the infinite line through `self`.
@@ -96,17 +132,6 @@ impl Line {
         };
 
         Some(Self::new(new_start, new_end))
-    }
-
-    /// Gets a point on the infinite line through `self` according to the parametric line equation:
-    ///
-    /// Negative values of `t` return points 'before' `self.start`.
-    /// `t = 0` returns `self.start`.
-    /// Values of `t` between 0 and 1 return points on `self`.
-    /// `t = 1` returns `self.end`.
-    /// Values of `t` greater than 1 return points 'after' `self.end`.
-    pub fn parametric_point(&self, t: f32) -> Vec2 {
-        self.start + (self.as_difference() * t)
     }
 
     /// Projects `self` and `other` on one another and compute their intersection.
