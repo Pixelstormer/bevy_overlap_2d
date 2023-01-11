@@ -8,7 +8,7 @@ pub mod draw;
 
 pub mod prelude {
     pub use super::collider::{
-        Capsule, Circle, Collider, Collides, Colliding, CollisionResult, Line, Point, Polygon,
+        Capsule, Circle, Collider, Collides, Colliding, ContactManifold, Line, Point, Polygon,
         Rectangle, Transformable, Triangle,
     };
     pub use super::draw::{

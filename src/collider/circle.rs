@@ -36,6 +36,11 @@ impl Circle {
     pub fn area(&self) -> f32 {
         self.radius_squared() * PI
     }
+
+    pub fn support_point(&self, direction: Vec2) -> Vec2 {
+        debug_assert!(direction.is_normalized());
+        self.position + (direction * self.radius)
+    }
 }
 
 impl Transformable for Circle {
@@ -45,46 +50,51 @@ impl Transformable for Circle {
 }
 
 impl Collides<Capsule> for Circle {
-    fn collide(&self, other: &Capsule) -> CollisionResult {
+    fn collide(&self, other: &Capsule) -> ContactManifold {
         other.collide(self)
     }
 }
 
 impl Collides<Circle> for Circle {
-    fn collide(&self, other: &Circle) -> CollisionResult {
-        (self.position.distance_squared(other.position) <= (self.radius + other.radius).powi(2))
-            .into()
+    fn collide(&self, other: &Circle) -> ContactManifold {
+        algorithms::collide_circle_circle(self, other)
     }
 }
 
 impl Collides<Line> for Circle {
-    fn collide(&self, other: &Line) -> CollisionResult {
+    fn collide(&self, other: &Line) -> ContactManifold {
         (other.distance_to_point_squared(&self.position) <= self.radius_squared()).into()
     }
 }
 
 impl Collides<Point> for Circle {
-    fn collide(&self, other: &Point) -> CollisionResult {
-        (other.distance_squared(self.position) <= self.radius_squared()).into()
+    fn collide(&self, other: &Point) -> ContactManifold {
+        let diff = other.0 - self.position;
+        ContactManifold::new_lazy(diff.length_squared() <= self.radius_squared(), || {
+            ContactPoint {
+                us: self.position + diff.clamp_length(self.radius, self.radius),
+                them: other.0,
+                normal: diff.normalize(),
+            }
+            .into()
+        })
     }
 }
 
 impl Collides<Polygon> for Circle {
-    fn collide(&self, other: &Polygon) -> CollisionResult {
+    fn collide(&self, other: &Polygon) -> ContactManifold {
         other.collide(self)
     }
 }
 
 impl Collides<Rectangle> for Circle {
-    fn collide(&self, other: &Rectangle) -> CollisionResult {
-        ((self.position - self.position.clamp(other.min(), other.max())).length_squared()
-            <= self.radius_squared())
-        .into()
+    fn collide(&self, other: &Rectangle) -> ContactManifold {
+        algorithms::collide_rect_circle(other, self).neg()
     }
 }
 
 impl Collides<Triangle> for Circle {
-    fn collide(&self, other: &Triangle) -> CollisionResult {
+    fn collide(&self, other: &Triangle) -> ContactManifold {
         todo!()
     }
 }

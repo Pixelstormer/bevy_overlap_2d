@@ -32,43 +32,50 @@ impl Transformable for Point {
 }
 
 impl Collides<Capsule> for Point {
-    fn collide(&self, other: &Capsule) -> CollisionResult {
+    fn collide(&self, other: &Capsule) -> ContactManifold {
         other.collide(self)
     }
 }
 
 impl Collides<Circle> for Point {
-    fn collide(&self, other: &Circle) -> CollisionResult {
-        other.collide(self)
+    fn collide(&self, other: &Circle) -> ContactManifold {
+        let diff = other.position - self.0;
+        ContactManifold::new_lazy(diff.length_squared() <= other.radius_squared(), || {
+            Contact::new(
+                self.0,
+                other.position - diff.clamp_length(other.radius, other.radius),
+                diff.normalize(),
+            )
+        })
     }
 }
 
 impl Collides<Line> for Point {
-    fn collide(&self, other: &Line) -> CollisionResult {
+    fn collide(&self, other: &Line) -> ContactManifold {
         other.collide(self)
     }
 }
 
 impl Collides<Point> for Point {
-    fn collide(&self, other: &Point) -> CollisionResult {
-        (self == other).into()
+    fn collide(&self, other: &Point) -> ContactManifold {
+        algorithms::collide_point_point(self, other)
     }
 }
 
 impl Collides<Polygon> for Point {
-    fn collide(&self, other: &Polygon) -> CollisionResult {
+    fn collide(&self, other: &Polygon) -> ContactManifold {
         other.collide(self)
     }
 }
 
 impl Collides<Rectangle> for Point {
-    fn collide(&self, other: &Rectangle) -> CollisionResult {
+    fn collide(&self, other: &Rectangle) -> ContactManifold {
         other.collide(self)
     }
 }
 
 impl Collides<Triangle> for Point {
-    fn collide(&self, other: &Triangle) -> CollisionResult {
+    fn collide(&self, other: &Triangle) -> ContactManifold {
         todo!()
     }
 }

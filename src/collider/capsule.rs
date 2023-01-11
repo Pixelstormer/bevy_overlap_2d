@@ -34,14 +34,14 @@ impl Transformable for Capsule {
 }
 
 impl Collides<Capsule> for Capsule {
-    fn collide(&self, other: &Capsule) -> CollisionResult {
-        (self.line.distance_to_line_squared(&other.line) <= (self.radius + other.radius).powi(2))
+    fn collide(&self, other: &Capsule) -> ContactManifold {
+        (self.line.closest_point_to_line(&other.line) <= (self.radius + other.radius).powi(2))
             .into()
     }
 }
 
 impl Collides<Circle> for Capsule {
-    fn collide(&self, other: &Circle) -> CollisionResult {
+    fn collide(&self, other: &Circle) -> ContactManifold {
         (self.line.distance_to_point_squared(&other.position)
             <= (self.radius + other.radius).powi(2))
         .into()
@@ -49,25 +49,25 @@ impl Collides<Circle> for Capsule {
 }
 
 impl Collides<Line> for Capsule {
-    fn collide(&self, other: &Line) -> CollisionResult {
-        (self.line.distance_to_line_squared(other) <= self.radius_squared()).into()
+    fn collide(&self, other: &Line) -> ContactManifold {
+        (self.line.closest_point_to_line(other) <= self.radius_squared()).into()
     }
 }
 
 impl Collides<Point> for Capsule {
-    fn collide(&self, other: &Point) -> CollisionResult {
+    fn collide(&self, other: &Point) -> ContactManifold {
         (self.line.distance_to_point_squared(&other.0) <= self.radius_squared()).into()
     }
 }
 
 impl Collides<Polygon> for Capsule {
-    fn collide(&self, other: &Polygon) -> CollisionResult {
+    fn collide(&self, other: &Polygon) -> ContactManifold {
         other.collide(self)
     }
 }
 
 impl Collides<Rectangle> for Capsule {
-    fn collide(&self, other: &Rectangle) -> CollisionResult {
+    fn collide(&self, other: &Rectangle) -> ContactManifold {
         (other.contains(self.line.start)
             || other.contains(self.line.end)
             || self.collide(&other.left()).colliding
@@ -79,7 +79,7 @@ impl Collides<Rectangle> for Capsule {
 }
 
 impl Collides<Triangle> for Capsule {
-    fn collide(&self, other: &Triangle) -> CollisionResult {
+    fn collide(&self, other: &Triangle) -> ContactManifold {
         todo!()
     }
 }

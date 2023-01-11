@@ -78,47 +78,43 @@ impl Transformable for Rectangle {
 }
 
 impl Collides<Capsule> for Rectangle {
-    fn collide(&self, other: &Capsule) -> CollisionResult {
+    fn collide(&self, other: &Capsule) -> ContactManifold {
         other.collide(self)
     }
 }
 
 impl Collides<Circle> for Rectangle {
-    fn collide(&self, other: &Circle) -> CollisionResult {
-        other.collide(self)
+    fn collide(&self, other: &Circle) -> ContactManifold {
+        algorithms::collide_rect_circle(self, other)
     }
 }
 
 impl Collides<Line> for Rectangle {
-    fn collide(&self, other: &Line) -> CollisionResult {
+    fn collide(&self, other: &Line) -> ContactManifold {
         other.collide(self)
     }
 }
 
 impl Collides<Point> for Rectangle {
-    fn collide(&self, other: &Point) -> CollisionResult {
+    fn collide(&self, other: &Point) -> ContactManifold {
         self.contains(other.0).into()
     }
 }
 
 impl Collides<Polygon> for Rectangle {
-    fn collide(&self, other: &Polygon) -> CollisionResult {
+    fn collide(&self, other: &Polygon) -> ContactManifold {
         other.collide(self)
     }
 }
 
 impl Collides<Rectangle> for Rectangle {
-    fn collide(&self, other: &Rectangle) -> CollisionResult {
-        (self.min().x <= other.max().x
-            && self.min().y <= other.max().y
-            && self.max().x >= other.min().x
-            && self.max().y >= other.min().y)
-            .into()
+    fn collide(&self, other: &Rectangle) -> ContactManifold {
+        algorithms::collide_rect_rect(self, other)
     }
 }
 
 impl Collides<Triangle> for Rectangle {
-    fn collide(&self, other: &Triangle) -> CollisionResult {
+    fn collide(&self, other: &Triangle) -> ContactManifold {
         todo!()
     }
 }

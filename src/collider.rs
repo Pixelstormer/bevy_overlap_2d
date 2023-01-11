@@ -1,5 +1,7 @@
+mod algorithms;
 mod capsule;
 mod circle;
+mod contact;
 mod line;
 mod point;
 mod polygon;
@@ -13,7 +15,13 @@ use bevy::{
 use bevy_prototype_lyon::prelude::{tess::path::path::Builder, Geometry};
 
 pub use {
-    capsule::Capsule, circle::Circle, line::Line, point::Point, polygon::Polygon, rect::Rectangle,
+    capsule::Capsule,
+    circle::Circle,
+    contact::{ContactEdge, ContactManifold, ContactPoint},
+    line::Line,
+    point::Point,
+    polygon::Polygon,
+    rect::Rectangle,
     triangle::Triangle,
 };
 
@@ -22,26 +30,7 @@ pub trait Transformable {
 }
 
 pub trait Collides<T>: Transformable {
-    fn collide(&self, other: &T) -> CollisionResult;
-}
-
-#[derive(Clone, Copy, Default, Debug, PartialEq, Eq)]
-pub struct CollisionResult {
-    pub colliding: bool,
-    // pub penetration_depth: f32,
-    // pub contact_normal: Vec2,
-}
-
-impl CollisionResult {
-    pub fn new(colliding: bool) -> Self {
-        CollisionResult { colliding }
-    }
-}
-
-impl From<bool> for CollisionResult {
-    fn from(colliding: bool) -> Self {
-        Self { colliding }
-    }
+    fn collide(&self, other: &T) -> ContactManifold;
 }
 
 #[derive(Component, Clone, Default, Debug, PartialEq, Eq)]
@@ -54,7 +43,7 @@ pub enum Collider {
     Line(Line),
     Point(Point),
     Polygon(Polygon),
-    Rect(Rectangle),
+    Rectangle(Rectangle),
     //Triangle(Triangle),
 }
 
@@ -108,13 +97,13 @@ impl From<Polygon> for Collider {
 
 impl From<Rectangle> for Collider {
     fn from(rect: Rectangle) -> Self {
-        Self::Rect(rect)
+        Self::Rectangle(rect)
     }
 }
 
 impl From<Rect> for Collider {
     fn from(rect: Rect) -> Self {
-        Self::Rect(rect.into())
+        Self::Rectangle(rect.into())
     }
 }
 
@@ -132,56 +121,56 @@ impl Transformable for Collider {
             Collider::Line(shape) => shape.to_transformed(transform).into(),
             Collider::Point(shape) => shape.to_transformed(transform).into(),
             Collider::Polygon(shape) => shape.to_transformed(transform).into(),
-            Collider::Rect(shape) => shape.to_transformed(transform).into(),
+            Collider::Rectangle(shape) => shape.to_transformed(transform).into(),
             // Collider::Triangle(shape) => shape.to_transformed(transform).into(),
         }
     }
 }
 
 impl Collides<Collider> for Collider {
-    fn collide(&self, other: &Collider) -> CollisionResult {
+    fn collide(&self, other: &Collider) -> ContactManifold {
         match (self, other) {
             (Collider::Capsule(a), Collider::Capsule(b)) => a.collide(b),
             (Collider::Capsule(a), Collider::Circle(b)) => a.collide(b),
             (Collider::Capsule(a), Collider::Line(b)) => a.collide(b),
             (Collider::Capsule(a), Collider::Point(b)) => a.collide(b),
             (Collider::Capsule(a), Collider::Polygon(b)) => a.collide(b),
-            (Collider::Capsule(a), Collider::Rect(b)) => a.collide(b),
+            (Collider::Capsule(a), Collider::Rectangle(b)) => a.collide(b),
             // (Collider::Capsule(a), Collider::Triangle(b)) => a.collide(b),
             (Collider::Circle(a), Collider::Capsule(b)) => a.collide(b),
             (Collider::Circle(a), Collider::Circle(b)) => a.collide(b),
             (Collider::Circle(a), Collider::Line(b)) => a.collide(b),
             (Collider::Circle(a), Collider::Point(b)) => a.collide(b),
             (Collider::Circle(a), Collider::Polygon(b)) => a.collide(b),
-            (Collider::Circle(a), Collider::Rect(b)) => a.collide(b),
+            (Collider::Circle(a), Collider::Rectangle(b)) => a.collide(b),
             // (Collider::Circle(a), Collider::Triangle(b)) => a.collide(b),
             (Collider::Line(a), Collider::Capsule(b)) => a.collide(b),
             (Collider::Line(a), Collider::Circle(b)) => a.collide(b),
             (Collider::Line(a), Collider::Line(b)) => a.collide(b),
             (Collider::Line(a), Collider::Point(b)) => a.collide(b),
             (Collider::Line(a), Collider::Polygon(b)) => a.collide(b),
-            (Collider::Line(a), Collider::Rect(b)) => a.collide(b),
+            (Collider::Line(a), Collider::Rectangle(b)) => a.collide(b),
             // (Collider::Line(a), Collider::Triangle(b)) => a.collide(b),
             (Collider::Point(a), Collider::Capsule(b)) => a.collide(b),
             (Collider::Point(a), Collider::Circle(b)) => a.collide(b),
             (Collider::Point(a), Collider::Line(b)) => a.collide(b),
             (Collider::Point(a), Collider::Point(b)) => a.collide(b),
             (Collider::Point(a), Collider::Polygon(b)) => a.collide(b),
-            (Collider::Point(a), Collider::Rect(b)) => a.collide(b),
+            (Collider::Point(a), Collider::Rectangle(b)) => a.collide(b),
             // (Collider::Point(a), Collider::Triangle(b)) => a.collide(b),
             (Collider::Polygon(a), Collider::Capsule(b)) => a.collide(b),
             (Collider::Polygon(a), Collider::Circle(b)) => a.collide(b),
             (Collider::Polygon(a), Collider::Line(b)) => a.collide(b),
             (Collider::Polygon(a), Collider::Point(b)) => a.collide(b),
             (Collider::Polygon(a), Collider::Polygon(b)) => a.collide(b),
-            (Collider::Polygon(a), Collider::Rect(b)) => a.collide(b),
+            (Collider::Polygon(a), Collider::Rectangle(b)) => a.collide(b),
             // (Collider::Polygon(a), Collider::Triangle(b)) => a.collide(b),
-            (Collider::Rect(a), Collider::Capsule(b)) => a.collide(b),
-            (Collider::Rect(a), Collider::Circle(b)) => a.collide(b),
-            (Collider::Rect(a), Collider::Line(b)) => a.collide(b),
-            (Collider::Rect(a), Collider::Point(b)) => a.collide(b),
-            (Collider::Rect(a), Collider::Polygon(b)) => a.collide(b),
-            (Collider::Rect(a), Collider::Rect(b)) => a.collide(b),
+            (Collider::Rectangle(a), Collider::Capsule(b)) => a.collide(b),
+            (Collider::Rectangle(a), Collider::Circle(b)) => a.collide(b),
+            (Collider::Rectangle(a), Collider::Line(b)) => a.collide(b),
+            (Collider::Rectangle(a), Collider::Point(b)) => a.collide(b),
+            (Collider::Rectangle(a), Collider::Polygon(b)) => a.collide(b),
+            (Collider::Rectangle(a), Collider::Rectangle(b)) => a.collide(b),
             // (Collider::Rect(a), Collider::Triangle(b)) => a.collide(b),
             // (Collider::Triangle(a), Collider::Capsule(b)) => a.collide(b),
             // (Collider::Triangle(a), Collider::Circle(b)) => a.collide(b),
@@ -203,7 +192,7 @@ impl Geometry for Collider {
             Collider::Line(shape) => shape.add_geometry(b),
             Collider::Point(shape) => shape.add_geometry(b),
             Collider::Polygon(shape) => shape.add_geometry(b),
-            Collider::Rect(shape) => shape.add_geometry(b),
+            Collider::Rectangle(shape) => shape.add_geometry(b),
             // Collider::Triangle(shape) => shape.add_geometry(b),
         }
     }
