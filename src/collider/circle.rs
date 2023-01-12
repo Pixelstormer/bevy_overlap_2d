@@ -37,6 +37,10 @@ impl Circle {
         self.radius_squared() * PI
     }
 
+    pub fn contains(&self, point: Vec2) -> bool {
+        self.position.distance_squared(point) <= self.radius_squared()
+    }
+
     pub fn support_point(&self, direction: Vec2) -> Vec2 {
         debug_assert!(direction.is_normalized());
         self.position + (direction * self.radius)

@@ -2,7 +2,7 @@ use super::*;
 use crate::transform_ext::TransformPoint2;
 use bevy_prototype_lyon::prelude::tess::{geom::Box2D, path::Winding};
 
-#[derive(Clone, Copy, Default, Debug, PartialEq)]
+#[derive(Clone, Copy, Default, PartialEq, Debug)]
 pub struct Rectangle(pub Rect);
 
 impl Rectangle {
@@ -59,6 +59,37 @@ impl Rectangle {
 
     pub fn contains(&self, point: Vec2) -> bool {
         self.0.contains(point)
+    }
+
+    /// The closest point within the bounds of `self` to the given point.
+    pub fn closest_point(&self, point: Vec2) -> Vec2 {
+        point.clamp(self.min(), self.max())
+    }
+
+    /// The closest point on the perimeter of `self` to the given point, as well as a boolean indicating
+    /// whether the given point lies inside `self` or not.
+    pub fn closest_point_on_perimeter(&self, point: Vec2) -> (Vec2, bool) {
+        let closest_point = self.closest_point(point);
+        let point_is_in_rect = closest_point == point;
+
+        point_is_in_rect
+            .then(|| {
+                let left = point.x - self.min().x;
+                let top = self.max().y - point.y;
+                let right = self.max().x - point.x;
+                let bottom = point.y - self.min().y;
+
+                if left <= top && left <= right && left <= bottom {
+                    Vec2::new(point.x - left, point.y)
+                } else if top <= right && top <= bottom {
+                    Vec2::new(point.x, point.y + top)
+                } else if right <= bottom {
+                    Vec2::new(point.x + right, point.y)
+                } else {
+                    Vec2::new(point.x, point.y - bottom)
+                }
+            })
+            .map_or((closest_point, false), |point| (point, true))
     }
 }
 

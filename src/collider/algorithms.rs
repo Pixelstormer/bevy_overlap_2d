@@ -99,16 +99,16 @@ pub fn collide_circle_point(us: &Circle, them: &Point) -> ContactManifold {}
 pub fn collide_circle_polygon(us: &Circle, them: &Polygon) -> ContactManifold {}
 
 pub fn collide_circle_rect(us: &Circle, them: &Rectangle) -> ContactManifold {
-    let closest_point = us.position.clamp(them.min(), them.max());
-    let diff = us.position - closest_point;
-    ContactManifold::new_lazy(diff.length_squared() <= us.radius_squared(), || {
-        ContactPoint::new(
-            closest_point,
-            us.position - diff.clamp_length_min(us.radius),
-            diff.normalize(),
-        )
-        .into()
-    })
+    let (closest_point, center_is_in_rect) = them.closest_point_on_perimeter(us.position);
+    if center_is_in_rect {
+        let normal = (us.position - closest_point).normalize();
+        ContactManifold::point(us.support_point(normal), closest_point, normal)
+    } else if us.contains(closest_point) {
+        let normal = (closest_point - us.position).normalize();
+        ContactManifold::point(us.support_point(normal), closest_point, normal)
+    } else {
+        ContactManifold::disjoint()
+    }
 }
 
 pub fn collide_line_line(us: &Line, them: &Line) -> ContactManifold {
