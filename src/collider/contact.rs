@@ -26,14 +26,6 @@ impl ContactManifold {
         Self::Coincident(point)
     }
 
-    pub fn new_lazy(colliding: bool, contact: impl FnOnce() -> Self) -> Self {
-        if colliding {
-            contact()
-        } else {
-            Self::Disjoint
-        }
-    }
-
     pub fn negate(&mut self) {
         *self = self.neg();
     }

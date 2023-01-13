@@ -18,7 +18,7 @@ pub enum LineIntersection {
 
 impl Line {
     pub fn new(start: Vec2, end: Vec2) -> Self {
-        Line { start, end }
+        Self { start, end }
     }
 
     pub fn length(&self) -> f32 {
@@ -167,10 +167,10 @@ impl Line {
 
         let ca = if range2[0] > range1[0] {
             let bcoord = (range2[0] - range1[0]) / length1;
-            Line::new(self.start + (tangent1 * bcoord), other.start)
+            Self::new(self.start + (tangent1 * bcoord), other.start)
         } else {
             let bcoord = (range1[0] - range2[0]) / length2;
-            Line::new(
+            Self::new(
                 self.start,
                 other.start + ((other.end - other.start) * bcoord),
             )
@@ -178,10 +178,10 @@ impl Line {
 
         let cb = if range2[1] < range1[1] {
             let bcoord = (range2[1] - range1[0]) / length1;
-            Line::new(self.start + (tangent1 * bcoord), other.end)
+            Self::new(self.start + (tangent1 * bcoord), other.end)
         } else {
             let bcoord = (range1[1] - range2[0]) / length2;
-            Line::new(self.end, other.start + ((other.end - other.start) * bcoord))
+            Self::new(self.end, other.start + ((other.end - other.start) * bcoord))
         };
 
         Some((ca, cb))
@@ -271,7 +271,7 @@ impl Line {
                                 LineIntersection::Intersecting(other.parametric_point(t0))
                             } else {
                                 // they overlap in a valid subsegment
-                                LineIntersection::Colinear(Line::new(
+                                LineIntersection::Colinear(Self::new(
                                     other.parametric_point(t0),
                                     other.parametric_point(t1),
                                 ))
