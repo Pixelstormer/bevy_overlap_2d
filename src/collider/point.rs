@@ -63,7 +63,7 @@ impl Collides<Polygon> for Point {
 
 impl Collides<Rectangle> for Point {
     fn collide(&self, other: &Rectangle) -> ContactManifold {
-        other.collide(self)
+        algorithms::collide_point_rect(self, other)
     }
 }
 

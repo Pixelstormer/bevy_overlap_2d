@@ -204,7 +204,7 @@ impl Collides<Line> for Rectangle {
 
 impl Collides<Point> for Rectangle {
     fn collide(&self, other: &Point) -> ContactManifold {
-        self.contains(other.0).into()
+        algorithms::collide_point_rect(other, self).neg()
     }
 }
 
