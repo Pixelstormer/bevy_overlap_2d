@@ -111,7 +111,7 @@ impl ColliderBundle {
 
     pub fn rect(rect: Rect) -> Self {
         Self {
-            collider: Rectangle::new(rect).into(),
+            collider: rect.into(),
             ..Default::default()
         }
     }
