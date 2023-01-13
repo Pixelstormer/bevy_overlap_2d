@@ -73,15 +73,7 @@ impl Collides<Line> for Circle {
 
 impl Collides<Point> for Circle {
     fn collide(&self, other: &Point) -> ContactManifold {
-        let diff = other.0 - self.position;
-        ContactManifold::new_lazy(diff.length_squared() <= self.radius_squared(), || {
-            ContactPoint {
-                us: self.position + diff.clamp_length(self.radius, self.radius),
-                them: other.0,
-                normal: diff.normalize(),
-            }
-            .into()
-        })
+        algorithms::collide_circle_point(self, other)
     }
 }
 

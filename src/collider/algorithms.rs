@@ -94,7 +94,12 @@ pub fn collide_circle_circle(us: &Circle, them: &Circle) -> ContactManifold {
 
 pub fn collide_circle_line(us: &Circle, them: &Line) -> ContactManifold {}
 
-pub fn collide_circle_point(us: &Circle, them: &Point) -> ContactManifold {}
+pub fn collide_circle_point(us: &Circle, them: &Point) -> ContactManifold {
+    ContactManifold::new_lazy(
+        us.position.distance_squared(them.0) <= us.radius_squared(),
+        || ContactManifold::Coincident(them.0),
+    )
+}
 
 pub fn collide_circle_polygon(us: &Circle, them: &Polygon) -> ContactManifold {}
 

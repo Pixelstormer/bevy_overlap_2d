@@ -39,14 +39,7 @@ impl Collides<Capsule> for Point {
 
 impl Collides<Circle> for Point {
     fn collide(&self, other: &Circle) -> ContactManifold {
-        let diff = other.position - self.0;
-        ContactManifold::new_lazy(diff.length_squared() <= other.radius_squared(), || {
-            Contact::new(
-                self.0,
-                other.position - diff.clamp_length(other.radius, other.radius),
-                diff.normalize(),
-            )
-        })
+        algorithms::collide_circle_point(other, self).neg()
     }
 }
 
