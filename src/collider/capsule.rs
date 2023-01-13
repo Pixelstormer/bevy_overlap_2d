@@ -34,37 +34,37 @@ impl Transformable for Capsule {
 }
 
 impl Collides<Capsule> for Capsule {
-    fn collide(&self, other: &Capsule) -> ContactManifold {
+    fn collide(&self, other: &Capsule) -> Option<ContactManifold> {
         algorithms::collide_capsule_capsule(self, other)
     }
 }
 
 impl Collides<Circle> for Capsule {
-    fn collide(&self, other: &Circle) -> ContactManifold {
+    fn collide(&self, other: &Circle) -> Option<ContactManifold> {
         algorithms::collide_capsule_circle(self, other)
     }
 }
 
 impl Collides<Line> for Capsule {
-    fn collide(&self, other: &Line) -> ContactManifold {
+    fn collide(&self, other: &Line) -> Option<ContactManifold> {
         (self.line.closest_point_to_line(other) <= self.radius_squared()).into()
     }
 }
 
 impl Collides<Point> for Capsule {
-    fn collide(&self, other: &Point) -> ContactManifold {
+    fn collide(&self, other: &Point) -> Option<ContactManifold> {
         algorithms::collide_capsule_point(self, other)
     }
 }
 
 impl Collides<Polygon> for Capsule {
-    fn collide(&self, other: &Polygon) -> ContactManifold {
+    fn collide(&self, other: &Polygon) -> Option<ContactManifold> {
         other.collide(self)
     }
 }
 
 impl Collides<Rectangle> for Capsule {
-    fn collide(&self, other: &Rectangle) -> ContactManifold {
+    fn collide(&self, other: &Rectangle) -> Option<ContactManifold> {
         (other.contains(self.line.start)
             || other.contains(self.line.end)
             || self.collide(&other.left()).colliding
@@ -76,7 +76,7 @@ impl Collides<Rectangle> for Capsule {
 }
 
 impl Collides<Triangle> for Capsule {
-    fn collide(&self, other: &Triangle) -> ContactManifold {
+    fn collide(&self, other: &Triangle) -> Option<ContactManifold> {
         todo!()
     }
 }

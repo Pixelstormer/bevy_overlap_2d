@@ -32,43 +32,43 @@ impl Transformable for Point {
 }
 
 impl Collides<Capsule> for Point {
-    fn collide(&self, other: &Capsule) -> ContactManifold {
+    fn collide(&self, other: &Capsule) -> Option<ContactManifold> {
         algorithms::collide_capsule_point(other, self).neg()
     }
 }
 
 impl Collides<Circle> for Point {
-    fn collide(&self, other: &Circle) -> ContactManifold {
+    fn collide(&self, other: &Circle) -> Option<ContactManifold> {
         algorithms::collide_circle_point(other, self).neg()
     }
 }
 
 impl Collides<Line> for Point {
-    fn collide(&self, other: &Line) -> ContactManifold {
+    fn collide(&self, other: &Line) -> Option<ContactManifold> {
         other.collide(self)
     }
 }
 
 impl Collides<Point> for Point {
-    fn collide(&self, other: &Point) -> ContactManifold {
+    fn collide(&self, other: &Point) -> Option<ContactManifold> {
         algorithms::collide_point_point(self, other)
     }
 }
 
 impl Collides<Polygon> for Point {
-    fn collide(&self, other: &Polygon) -> ContactManifold {
+    fn collide(&self, other: &Polygon) -> Option<ContactManifold> {
         other.collide(self)
     }
 }
 
 impl Collides<Rectangle> for Point {
-    fn collide(&self, other: &Rectangle) -> ContactManifold {
+    fn collide(&self, other: &Rectangle) -> Option<ContactManifold> {
         algorithms::collide_point_rect(self, other)
     }
 }
 
 impl Collides<Triangle> for Point {
-    fn collide(&self, other: &Triangle) -> ContactManifold {
+    fn collide(&self, other: &Triangle) -> Option<ContactManifold> {
         todo!()
     }
 }

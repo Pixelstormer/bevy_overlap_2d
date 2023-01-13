@@ -4,6 +4,7 @@ use super::{
     layers::{CollisionLayers, CollisionLayersLabel},
 };
 use bevy::prelude::*;
+use std::ops::Neg;
 
 #[derive(StageLabel)]
 pub struct CollisionStage;
@@ -39,25 +40,26 @@ pub enum CollisionEvent {
 }
 
 impl CollisionEvent {
-    pub fn began(a: Entity, b: Entity) -> Self {
-        Self::Began(CollisionBegan { a, b })
+    pub fn began(us: Entity, them: Entity, contact: ContactManifold) -> Self {
+        Self::Began(CollisionBegan { us, them, contact })
     }
 
-    pub fn ended(a: Entity, b: Entity) -> Self {
-        Self::Ended(CollisionEnded { a, b })
+    pub fn ended(us: Entity, them: Entity) -> Self {
+        Self::Ended(CollisionEnded { us, them })
     }
 }
 
 #[derive(Clone, Copy, Debug)]
 pub struct CollisionBegan {
-    pub a: Entity,
-    pub b: Entity,
+    pub us: Entity,
+    pub them: Entity,
+    pub contact: ContactManifold,
 }
 
 #[derive(Clone, Copy, Debug)]
 pub struct CollisionEnded {
-    pub a: Entity,
-    pub b: Entity,
+    pub us: Entity,
+    pub them: Entity,
 }
 
 #[derive(Bundle, Default, Debug)]
@@ -149,35 +151,34 @@ fn find_colliding_pairs(
     )>,
     mut events: EventWriter<CollisionEvent>,
 ) {
-    let size = query.iter_combinations::<2>().size_hint().0;
-    let mut events_batch = Vec::with_capacity(size);
+    let mut events_batch = Vec::new();
 
     let mut iter = query.iter_combinations_mut();
-    while let Some([a, b]) = iter.fetch_next() {
-        let (a_entity, a_transform, a_collider, a_layers, mut a_colliding) = a;
-        let (b_entity, b_transform, b_collider, b_layers, mut b_colliding) = b;
+    while let Some([us, them]) = iter.fetch_next() {
+        let (us_entity, us_transform, us_collider, us_layers, mut us_colliding) = us;
+        let (them_entity, them_transform, them_collider, them_layers, mut them_colliding) = them;
 
-        if !a_layers.intersects(b_layers) {
+        if !us_layers.intersects(them_layers) {
             continue;
         }
 
-        let result = a_collider
-            .to_transformed(a_transform)
-            .collide(&b_collider.to_transformed(b_transform));
+        let contact = us_collider
+            .to_transformed(us_transform)
+            .collide(&them_collider.to_transformed(them_transform));
 
-        if result.is_colliding() {
-            let a_was_disjoint = a_colliding.0.insert(b_entity);
-            let b_was_disjoint = b_colliding.0.insert(a_entity);
-            if a_was_disjoint && b_was_disjoint {
+        if let Some(manifold) = contact {
+            let us_was_disjoint = us_colliding.0.insert(them_entity, manifold).is_none();
+            let them_was_disjoint = them_colliding.0.insert(us_entity, manifold.neg()).is_none();
+            if us_was_disjoint && them_was_disjoint {
                 // Only send a collision event if neither entity was already colliding with the other
-                events_batch.push(CollisionEvent::began(a_entity, b_entity));
+                events_batch.push(CollisionEvent::began(us_entity, them_entity, manifold));
             }
         } else {
-            let a_was_colliding = a_colliding.0.remove(&b_entity);
-            let b_was_colliding = b_colliding.0.remove(&a_entity);
-            if a_was_colliding && b_was_colliding {
+            let us_was_colliding = us_colliding.0.remove(&them_entity).is_some();
+            let them_was_colliding = them_colliding.0.remove(&us_entity).is_some();
+            if us_was_colliding && them_was_colliding {
                 // Only send a collision event if both entities were previously colliding with eachother
-                events_batch.push(CollisionEvent::ended(a_entity, b_entity));
+                events_batch.push(CollisionEvent::ended(us_entity, them_entity));
             }
         }
     }

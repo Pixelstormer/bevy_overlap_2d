@@ -185,43 +185,43 @@ impl Transformable for Rectangle {
 }
 
 impl Collides<Capsule> for Rectangle {
-    fn collide(&self, other: &Capsule) -> ContactManifold {
+    fn collide(&self, other: &Capsule) -> Option<ContactManifold> {
         other.collide(self)
     }
 }
 
 impl Collides<Circle> for Rectangle {
-    fn collide(&self, other: &Circle) -> ContactManifold {
+    fn collide(&self, other: &Circle) -> Option<ContactManifold> {
         algorithms::collide_circle_rect(other, self).neg()
     }
 }
 
 impl Collides<Line> for Rectangle {
-    fn collide(&self, other: &Line) -> ContactManifold {
+    fn collide(&self, other: &Line) -> Option<ContactManifold> {
         other.collide(self)
     }
 }
 
 impl Collides<Point> for Rectangle {
-    fn collide(&self, other: &Point) -> ContactManifold {
+    fn collide(&self, other: &Point) -> Option<ContactManifold> {
         algorithms::collide_point_rect(other, self).neg()
     }
 }
 
 impl Collides<Polygon> for Rectangle {
-    fn collide(&self, other: &Polygon) -> ContactManifold {
+    fn collide(&self, other: &Polygon) -> Option<ContactManifold> {
         other.collide(self)
     }
 }
 
 impl Collides<Rectangle> for Rectangle {
-    fn collide(&self, other: &Rectangle) -> ContactManifold {
+    fn collide(&self, other: &Rectangle) -> Option<ContactManifold> {
         algorithms::collide_rect_rect(self, other)
     }
 }
 
 impl Collides<Triangle> for Rectangle {
-    fn collide(&self, other: &Triangle) -> ContactManifold {
+    fn collide(&self, other: &Triangle) -> Option<ContactManifold> {
         todo!()
     }
 }

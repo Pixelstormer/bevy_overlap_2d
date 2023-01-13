@@ -54,43 +54,43 @@ impl Transformable for Circle {
 }
 
 impl Collides<Capsule> for Circle {
-    fn collide(&self, other: &Capsule) -> ContactManifold {
+    fn collide(&self, other: &Capsule) -> Option<ContactManifold> {
         algorithms::collide_capsule_circle(other, self).neg()
     }
 }
 
 impl Collides<Circle> for Circle {
-    fn collide(&self, other: &Circle) -> ContactManifold {
+    fn collide(&self, other: &Circle) -> Option<ContactManifold> {
         algorithms::collide_circle_circle(self, other)
     }
 }
 
 impl Collides<Line> for Circle {
-    fn collide(&self, other: &Line) -> ContactManifold {
+    fn collide(&self, other: &Line) -> Option<ContactManifold> {
         (other.distance_to_point_squared(&self.position) <= self.radius_squared()).into()
     }
 }
 
 impl Collides<Point> for Circle {
-    fn collide(&self, other: &Point) -> ContactManifold {
+    fn collide(&self, other: &Point) -> Option<ContactManifold> {
         algorithms::collide_circle_point(self, other)
     }
 }
 
 impl Collides<Polygon> for Circle {
-    fn collide(&self, other: &Polygon) -> ContactManifold {
+    fn collide(&self, other: &Polygon) -> Option<ContactManifold> {
         other.collide(self)
     }
 }
 
 impl Collides<Rectangle> for Circle {
-    fn collide(&self, other: &Rectangle) -> ContactManifold {
+    fn collide(&self, other: &Rectangle) -> Option<ContactManifold> {
         algorithms::collide_circle_rect(self, other)
     }
 }
 
 impl Collides<Triangle> for Circle {
-    fn collide(&self, other: &Triangle) -> ContactManifold {
+    fn collide(&self, other: &Triangle) -> Option<ContactManifold> {
         todo!()
     }
 }

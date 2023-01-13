@@ -10,10 +10,9 @@ mod triangle;
 
 use bevy::{
     prelude::{Component, Entity, GlobalTransform, Rect, Vec2},
-    utils::HashSet,
+    utils::HashMap,
 };
 use bevy_prototype_lyon::prelude::{tess::path::path::Builder, Geometry};
-use std::ops::Neg;
 
 pub use {
     capsule::Capsule,
@@ -31,11 +30,11 @@ pub trait Transformable {
 }
 
 pub trait Collides<T>: Transformable {
-    fn collide(&self, other: &T) -> ContactManifold;
+    fn collide(&self, other: &T) -> Option<ContactManifold>;
 }
 
-#[derive(Component, Clone, Default, Debug, PartialEq, Eq)]
-pub struct Colliding(pub HashSet<Entity>);
+#[derive(Component, Clone, Default, Debug, PartialEq)]
+pub struct Colliding(pub HashMap<Entity, ContactManifold>);
 
 #[derive(Clone, Component, Debug, PartialEq)]
 pub enum Collider {
@@ -129,7 +128,7 @@ impl Transformable for Collider {
 }
 
 impl Collides<Collider> for Collider {
-    fn collide(&self, other: &Collider) -> ContactManifold {
+    fn collide(&self, other: &Collider) -> Option<ContactManifold> {
         match (self, other) {
             (Collider::Capsule(a), Collider::Capsule(b)) => a.collide(b),
             (Collider::Capsule(a), Collider::Circle(b)) => a.collide(b),

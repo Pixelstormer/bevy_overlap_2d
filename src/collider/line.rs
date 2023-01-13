@@ -435,37 +435,37 @@ impl Transformable for Line {
 }
 
 impl Collides<Capsule> for Line {
-    fn collide(&self, other: &Capsule) -> ContactManifold {
+    fn collide(&self, other: &Capsule) -> Option<ContactManifold> {
         other.collide(self)
     }
 }
 
 impl Collides<Circle> for Line {
-    fn collide(&self, other: &Circle) -> ContactManifold {
+    fn collide(&self, other: &Circle) -> Option<ContactManifold> {
         other.collide(self)
     }
 }
 
 impl Collides<Line> for Line {
-    fn collide(&self, other: &Self) -> ContactManifold {
+    fn collide(&self, other: &Self) -> Option<ContactManifold> {
         algorithms::collide_line_line(self, other)
     }
 }
 
 impl Collides<Point> for Line {
-    fn collide(&self, other: &Point) -> ContactManifold {
+    fn collide(&self, other: &Point) -> Option<ContactManifold> {
         (self.distance_to_point_squared(&other.0) <= f32::EPSILON * f32::EPSILON).into()
     }
 }
 
 impl Collides<Polygon> for Line {
-    fn collide(&self, other: &Polygon) -> ContactManifold {
+    fn collide(&self, other: &Polygon) -> Option<ContactManifold> {
         other.collide(self)
     }
 }
 
 impl Collides<Rectangle> for Line {
-    fn collide(&self, other: &Rectangle) -> ContactManifold {
+    fn collide(&self, other: &Rectangle) -> Option<ContactManifold> {
         (other.contains(self.start)
             || other.contains(self.end)
             || self.collide(&other.left()).colliding
@@ -477,7 +477,7 @@ impl Collides<Rectangle> for Line {
 }
 
 impl Collides<Triangle> for Line {
-    fn collide(&self, other: &Triangle) -> ContactManifold {
+    fn collide(&self, other: &Triangle) -> Option<ContactManifold> {
         todo!()
     }
 }

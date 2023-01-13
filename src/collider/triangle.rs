@@ -42,43 +42,43 @@ impl Transformable for Triangle {
 }
 
 impl Collides<Capsule> for Triangle {
-    fn collide(&self, other: &Capsule) -> ContactManifold {
+    fn collide(&self, other: &Capsule) -> Option<ContactManifold> {
         todo!()
     }
 }
 
 impl Collides<Circle> for Triangle {
-    fn collide(&self, other: &Circle) -> ContactManifold {
+    fn collide(&self, other: &Circle) -> Option<ContactManifold> {
         todo!()
     }
 }
 
 impl Collides<Line> for Triangle {
-    fn collide(&self, other: &Line) -> ContactManifold {
+    fn collide(&self, other: &Line) -> Option<ContactManifold> {
         todo!()
     }
 }
 
 impl Collides<Point> for Triangle {
-    fn collide(&self, other: &Point) -> ContactManifold {
+    fn collide(&self, other: &Point) -> Option<ContactManifold> {
         todo!()
     }
 }
 
 impl Collides<Polygon> for Triangle {
-    fn collide(&self, other: &Polygon) -> ContactManifold {
+    fn collide(&self, other: &Polygon) -> Option<ContactManifold> {
         todo!()
     }
 }
 
 impl Collides<Rectangle> for Triangle {
-    fn collide(&self, other: &Rectangle) -> ContactManifold {
+    fn collide(&self, other: &Rectangle) -> Option<ContactManifold> {
         todo!()
     }
 }
 
 impl Collides<Triangle> for Triangle {
-    fn collide(&self, other: &Triangle) -> ContactManifold {
+    fn collide(&self, other: &Triangle) -> Option<ContactManifold> {
         todo!()
     }
 }

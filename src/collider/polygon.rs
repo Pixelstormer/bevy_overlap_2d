@@ -94,7 +94,7 @@ impl Transformable for Polygon {
 }
 
 impl Collides<Capsule> for Polygon {
-    fn collide(&self, other: &Capsule) -> ContactManifold {
+    fn collide(&self, other: &Capsule) -> Option<ContactManifold> {
         (self.contains(other.line.start)
             || self.contains(other.line.end)
             || self.edges().any(|edge| edge.collide(other).colliding))
@@ -103,14 +103,14 @@ impl Collides<Capsule> for Polygon {
 }
 
 impl Collides<Circle> for Polygon {
-    fn collide(&self, other: &Circle) -> ContactManifold {
+    fn collide(&self, other: &Circle) -> Option<ContactManifold> {
         (self.contains(other.position) || self.edges().any(|edge| edge.collide(other).colliding))
             .into()
     }
 }
 
 impl Collides<Line> for Polygon {
-    fn collide(&self, other: &Line) -> ContactManifold {
+    fn collide(&self, other: &Line) -> Option<ContactManifold> {
         (self.contains(other.start)
             || self.contains(other.end)
             || self.edges().any(|edge| edge.collide(other).colliding))
@@ -119,13 +119,13 @@ impl Collides<Line> for Polygon {
 }
 
 impl Collides<Point> for Polygon {
-    fn collide(&self, other: &Point) -> ContactManifold {
+    fn collide(&self, other: &Point) -> Option<ContactManifold> {
         self.contains(other.0).into()
     }
 }
 
 impl Collides<Polygon> for Polygon {
-    fn collide(&self, other: &Polygon) -> ContactManifold {
+    fn collide(&self, other: &Polygon) -> Option<ContactManifold> {
         (self.vertices.iter().any(|&vertex| other.contains(vertex))
             || other.vertices.iter().any(|&vertex| self.contains(vertex))
             || self.edges().any(|edge| edge.collide(other).colliding))
@@ -134,7 +134,7 @@ impl Collides<Polygon> for Polygon {
 }
 
 impl Collides<Rectangle> for Polygon {
-    fn collide(&self, other: &Rectangle) -> ContactManifold {
+    fn collide(&self, other: &Rectangle) -> Option<ContactManifold> {
         (self.contains(other.min())
             || self.contains(other.max())
             || self.edges().any(|edge| edge.collide(other).colliding))
@@ -143,7 +143,7 @@ impl Collides<Rectangle> for Polygon {
 }
 
 impl Collides<Triangle> for Polygon {
-    fn collide(&self, other: &Triangle) -> ContactManifold {
+    fn collide(&self, other: &Triangle) -> Option<ContactManifold> {
         todo!()
     }
 }
